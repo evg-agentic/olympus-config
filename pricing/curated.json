@@ -157,7 +157,7 @@
       "unit": "mtok",
       "currency": "CNY",
       "source": "阿里云百炼模型调用价格（华北2 北京，原价）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-10-16 核对",
-      "note": "缓存读按隐式缓存命中价（该档输入的 20%），缓存写按显式缓存创建价（该档输入的 125%），见 https://help.aliyun.com/zh/model-studio/context-cache 。",
+      "note": "百炼说明该模型的缓存命中价不是通常的 20% / 10%，具体以控制台为准；此处暂按 20% 计。 缓存读按隐式缓存命中价（该档输入的 20%），缓存写按显式缓存创建价（该档输入的 125%），见 https://help.aliyun.com/zh/model-studio/context-cache 。",
       "examples": [
         "qwen3.8-max",
         "qwen3.8-max-0902"
@@ -203,7 +203,7 @@
       "unit": "mtok",
       "currency": "CNY",
       "source": "阿里云百炼模型调用价格（华北2 北京，原价）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-10-16 核对",
-      "note": "无阶梯计价，不支持上下文缓存。",
+      "note": "无阶梯计价。 只支持隐式缓存：缓存读按该档输入的 20%，没有缓存写，见 https://help.aliyun.com/zh/model-studio/context-cache 。",
       "examples": [
         "qwen-max",
         "qwen-max-latest"
@@ -213,7 +213,8 @@
           "name": "标准",
           "rates": {
             "input": 2.4,
-            "output": 9.6
+            "output": 9.6,
+            "cache_read": 0.48
           }
         }
       ]
@@ -264,7 +265,7 @@
       "unit": "mtok",
       "currency": "CNY",
       "source": "阿里云百炼模型调用价格（华北2 北京，原价）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-10-16 核对",
-      "note": "缓存读按隐式缓存命中价（该档输入的 20%），缓存写按显式缓存创建价（该档输入的 125%），见 https://help.aliyun.com/zh/model-studio/context-cache 。",
+      "note": "只支持显式缓存：缓存读按显式缓存命中价（该档输入的 10%），缓存写按创建价（该档输入的 125%），见 https://help.aliyun.com/zh/model-studio/context-cache 。",
       "examples": [
         "qwen3.6-plus",
         "qwen3.6-plus-2026-04-02"
@@ -275,7 +276,7 @@
           "rates": {
             "input": 2,
             "output": 12,
-            "cache_read": 0.4,
+            "cache_read": 0.2,
             "cache_write_5m": 2.5
           }
         },
@@ -292,7 +293,7 @@
           "rates": {
             "input": 8,
             "output": 48,
-            "cache_read": 1.6,
+            "cache_read": 0.8,
             "cache_write_5m": 10.0
           }
         }
@@ -304,7 +305,7 @@
       "unit": "mtok",
       "currency": "CNY",
       "source": "阿里云百炼模型调用价格（华北2 北京，原价）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-10-16 核对",
-      "note": "缓存读按隐式缓存命中价（该档输入的 20%），缓存写按显式缓存创建价（该档输入的 125%），见 https://help.aliyun.com/zh/model-studio/context-cache 。",
+      "note": "只支持显式缓存：缓存读按显式缓存命中价（该档输入的 10%），缓存写按创建价（该档输入的 125%），见 https://help.aliyun.com/zh/model-studio/context-cache 。",
       "examples": [
         "qwen3.5-plus",
         "qwen3.5-plus-2026-02-15"
@@ -315,7 +316,7 @@
           "rates": {
             "input": 0.8,
             "output": 4.8,
-            "cache_read": 0.16,
+            "cache_read": 0.08,
             "cache_write_5m": 1.0
           }
         },
@@ -332,7 +333,7 @@
           "rates": {
             "input": 2,
             "output": 12,
-            "cache_read": 0.4,
+            "cache_read": 0.2,
             "cache_write_5m": 2.5
           }
         },
@@ -349,7 +350,7 @@
           "rates": {
             "input": 4,
             "output": 24,
-            "cache_read": 0.8,
+            "cache_read": 0.4,
             "cache_write_5m": 5.0
           }
         }
@@ -480,7 +481,7 @@
       "unit": "mtok",
       "currency": "CNY",
       "source": "阿里云百炼模型调用价格（华北2 北京，原价）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-10-16 核对",
-      "note": "2025-12-01 之前的 qwen-plus 快照无阶梯计价。",
+      "note": "2025-12-01 之前的 qwen-plus 快照无阶梯计价。 不支持上下文缓存。",
       "examples": [
         "qwen-plus-2025-07-14",
         "qwen-plus-2025-01-25"
@@ -516,7 +517,7 @@
       "unit": "mtok",
       "currency": "CNY",
       "source": "阿里云百炼模型调用价格（华北2 北京，原价）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-10-16 核对",
-      "note": "缓存读按隐式缓存命中价（该档输入的 20%），缓存写按显式缓存创建价（该档输入的 125%），见 https://help.aliyun.com/zh/model-studio/context-cache 。",
+      "note": "百炼说明该模型的缓存命中价不是通常的 20% / 10%，具体以控制台为准；此处暂按 20% 计。 缓存读按隐式缓存命中价（该档输入的 20%），缓存写按显式缓存创建价（该档输入的 125%），见 https://help.aliyun.com/zh/model-studio/context-cache 。",
       "examples": [
         "qwen3.8-flash"
       ],
@@ -595,7 +596,7 @@
       "unit": "mtok",
       "currency": "CNY",
       "source": "阿里云百炼模型调用价格（华北2 北京，原价）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-10-16 核对",
-      "note": "缓存读按隐式缓存命中价（该档输入的 20%），缓存写按显式缓存创建价（该档输入的 125%），见 https://help.aliyun.com/zh/model-studio/context-cache 。",
+      "note": "只支持显式缓存：缓存读按显式缓存命中价（该档输入的 10%），缓存写按创建价（该档输入的 125%），见 https://help.aliyun.com/zh/model-studio/context-cache 。",
       "examples": [
         "qwen3.6-flash",
         "qwen3.6-flash-2026-04-16"
@@ -606,7 +607,7 @@
           "rates": {
             "input": 1.2,
             "output": 7.2,
-            "cache_read": 0.24,
+            "cache_read": 0.12,
             "cache_write_5m": 1.5
           }
         },
@@ -623,7 +624,7 @@
           "rates": {
             "input": 4.8,
             "output": 28.8,
-            "cache_read": 0.96,
+            "cache_read": 0.48,
             "cache_write_5m": 6.0
           }
         }
@@ -635,7 +636,7 @@
       "unit": "mtok",
       "currency": "CNY",
       "source": "阿里云百炼模型调用价格（华北2 北京，原价）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-10-16 核对",
-      "note": "缓存读按隐式缓存命中价（该档输入的 20%），缓存写按显式缓存创建价（该档输入的 125%），见 https://help.aliyun.com/zh/model-studio/context-cache 。",
+      "note": "只支持显式缓存：缓存读按显式缓存命中价（该档输入的 10%），缓存写按创建价（该档输入的 125%），见 https://help.aliyun.com/zh/model-studio/context-cache 。",
       "examples": [
         "qwen3.5-flash",
         "qwen3.5-flash-2026-02-23"
@@ -646,7 +647,7 @@
           "rates": {
             "input": 0.2,
             "output": 2,
-            "cache_read": 0.04,
+            "cache_read": 0.02,
             "cache_write_5m": 0.25
           }
         },
@@ -663,7 +664,7 @@
           "rates": {
             "input": 0.8,
             "output": 8,
-            "cache_read": 0.16,
+            "cache_read": 0.08,
             "cache_write_5m": 1.0
           }
         },
@@ -680,7 +681,7 @@
           "rates": {
             "input": 1.2,
             "output": 12,
-            "cache_read": 0.24,
+            "cache_read": 0.12,
             "cache_write_5m": 1.5
           }
         }
@@ -760,7 +761,8 @@
             "output": 2
           }
         }
-      ]
+      ],
+      "note": "不支持上下文缓存。"
     },
     {
       "id": "qwen3-coder-flash",
