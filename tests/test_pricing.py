@@ -147,6 +147,7 @@ class SummaryTest(unittest.TestCase):
         self.assertIn("新增 1，删除 1，变更 1", text)
         self.assertIn("`a`：默认档 USD input 1, output 2 → USD input 3, output 2", text)
         self.assertIn("compare/111111111111...222222222222", text)
+        self.assertIn("- `c`（c）：USD input 1, output 2，1 档", text)
 
 
 if __name__ == "__main__":

@@ -203,7 +203,7 @@
       "unit": "mtok",
       "currency": "CNY",
       "source": "阿里云百炼模型调用价格（华北2 北京，原价）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-10-16 核对",
-      "note": "无阶梯计价。缓存读沿用隐式缓存命中价（输入的 20%）。",
+      "note": "无阶梯计价，不支持上下文缓存。",
       "examples": [
         "qwen-max",
         "qwen-max-latest"

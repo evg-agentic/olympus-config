@@ -17,6 +17,13 @@ def format_rates(entry: dict[str, Any]) -> str:
     return f"{entry['currency']} {shown}"
 
 
+def examples_of(entry: dict[str, Any], limit: int = 4) -> str:
+    """The model names an entry prices — its id alone hides a merged group."""
+    names = entry["examples"]
+    shown = ", ".join(names[:limit])
+    return shown if len(names) <= limit else f"{shown} 等 {len(names)} 个"
+
+
 def changed_fields(old: dict[str, Any], new: dict[str, Any]) -> list[str]:
     notes: list[str] = []
     if old["tiers"][0]["rates"] != new["tiers"][0]["rates"] or old["currency"] != new["currency"]:
@@ -63,11 +70,11 @@ def summarize(previous: dict[str, Any] | None, current: dict[str, Any], report: 
         out.append("")
     if removed:
         out += ["### 删除（这些模型之后会显示为未计价）", ""]
-        out += [f"- `{m['id']}`（{', '.join(m['examples'][:3])}）" for m in removed]
+        out += [f"- `{m['id']}`（{examples_of(m)}）" for m in removed]
         out.append("")
     if added:
         out += ["### 新增", ""]
-        out += [f"- `{m['id']}`：{format_rates(m)}（{len(m['tiers'])} 档）" for m in added]
+        out += [f"- `{m['id']}`（{examples_of(m)}）：{format_rates(m)}，{len(m['tiers'])} 档" for m in added]
         out.append("")
     if report:
         out += ["<details><summary>构建日志（被覆盖或跳过的上游条目）</summary>", "", "```text", *report, "```", "</details>", ""]
