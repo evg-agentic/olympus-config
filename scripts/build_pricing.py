@@ -255,13 +255,16 @@ def litellm_group_pattern(prefix: str, names: list[str]) -> str:
 def convert_litellm(
     table: dict[str, Any], today: str, priced_by: Callable[[str], str | None]
 ) -> tuple[list[dict[str, Any]], list[str]]:
-    """One entry per vendor and price. Names an earlier source already prices
-    are left out before grouping, so one overridden name never takes its
-    same-priced siblings down with it."""
+    """One entry per vendor, price and retirement date. Names an earlier source
+    already prices are left out before grouping, so one overridden name never
+    takes its same-priced siblings down with it.
+
+    A retired model keeps its last list price: a gateway or a stale config may
+    still report the name, and a known price beats "unpriced"."""
     out: list[dict[str, Any]] = []
     skipped: list[str] = []
     for vendor, spec in LITELLM_VENDORS.items():
-        groups: dict[str, tuple[list[dict[str, Any]], list[str]]] = {}
+        groups: dict[tuple[str, str], tuple[list[dict[str, Any]], list[str]]] = {}
         for key, info in table.items():
             prefix = spec.litellm_prefix
             if not isinstance(info, dict) or info.get("mode") not in LITELLM_MODES:
@@ -275,38 +278,41 @@ def convert_litellm(
             if owner is not None:
                 skipped.append(f"{key}: already priced by {owner!r}")
                 continue
-            if info.get("deprecation_date") and str(info["deprecation_date"]) <= today:
-                skipped.append(f"{key}: deprecated {info['deprecation_date']}")
-                continue
+            retired = str(info.get("deprecation_date") or "")
+            if retired > today:
+                retired = ""
             try:
                 tiers = litellm_tiers(info, key)
             except BuildError as exc:
                 skipped.append(str(exc))
                 continue
             signature = json.dumps(tiers, sort_keys=True)
-            groups.setdefault(signature, (tiers, []))[1].append(name)
-        for tiers, names in groups.values():
+            groups.setdefault((signature, retired), (tiers, []))[1].append(name)
+        for (_, retired), (tiers, names) in groups.items():
             names.sort(key=lambda n: (len(n), n))
             chunk: list[str] = []
             for name in names:
                 if chunk and len(litellm_group_pattern(spec.prefix, [*chunk, name])) > MAX_PATTERN_LENGTH:
-                    out.append(litellm_entry(vendor, spec, chunk, tiers))
+                    out.append(litellm_entry(vendor, spec, chunk, tiers, retired))
                     chunk = []
                 chunk.append(name)
-            out.append(litellm_entry(vendor, spec, chunk, tiers))
+            out.append(litellm_entry(vendor, spec, chunk, tiers, retired))
     return out, skipped
 
 
-def litellm_entry(vendor: str, spec: LitellmVendor, names: list[str], tiers: list[dict[str, Any]]) -> dict[str, Any]:
-    return {
+def litellm_entry(
+    vendor: str, spec: LitellmVendor, names: list[str], tiers: list[dict[str, Any]], retired: str
+) -> dict[str, Any]:
+    entry: dict[str, Any] = {
         "id": entry_id(f"{vendor}-{names[0]}"),
         "match": litellm_group_pattern(spec.prefix, names),
         "unit": "mtok",
         "currency": "USD",
         "source": f"litellm model_prices_and_context_window.json（{spec.prefix}）",
-        "examples": list(names),
-        "tiers": tiers,
     }
+    if retired:
+        entry["note"] = f"厂商已于 {retired} 退役，保留最后的官方价，供仍上报该名字的调用计价。"
+    return {**entry, "examples": list(names), "tiers": tiers}
 
 
 # ---- assembly ---------------------------------------------------------------------

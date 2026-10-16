@@ -54,7 +54,7 @@ python3 -m unittest discover -s tests
 
 1. **`curated.json`**（手工维护）：
    - DeepSeek：按官方价目页，含高峰/空闲分时价；
-   - 阿里云百炼的千问、向量模型、视觉模型：人民币价；
+   - 阿里云百炼的千问、向量模型、视觉模型：人民币价，含上下文阶梯和思考模式的输出价；
    - Tavily、通义万相、Supadata、语音识别：按次、按张、按 credit、按秒计价。
 2. **[langfuse](https://github.com/langfuse/langfuse) `default-model-prices.json`**：OpenAI、Anthropic、Google。
    - 正则保留原样，覆盖 Bedrock、Vertex、Azure 等命名。
@@ -93,20 +93,24 @@ python3 -m unittest discover -s tests
 - **`tiers`**：恰好一档没有 `when`，这档就是默认档。条件档的规则：
   - 条件之间是“与”的关系；
   - 同时命中多档时取 `priority` 最高的一档，作用于整次调用；
-  - 没写的费率沿用默认档。
+  - 没写的费率沿用**默认档**，不是相邻的档。所以叠加条件的档（比如“输入 >128K · 思考模式”）要把费率写全。
 - **费率键**：`input`、`output`、`cache_read`、`cache_write_5m`、`cache_write_1h`；非 token 条目只有 `per_unit`。全为 0 的档必须写 `zero_reason`。
 - **条件**：
   - `input_tokens {gt|gte: N}`：全部输入，含缓存读写；
   - `time_window {tz, hours, weekdays?}`：按调用开始时间判断，时段可以跨零点；
-  - `service_tier {in: [...]}`：请求的服务档位。Anthropic 的 `speed: fast` 也按 `fast` 上报。
+  - `service_tier {in: [...]}`：请求的服务档位。Anthropic 的 `speed: fast` 也按 `fast` 上报；
+  - `reasoning {used: true}`：本次调用产生了思考 token。有些模型思考模式的输出更贵，例如百炼的 `qwen-plus`。
 
 完整设计见 olympus 仓库 `docs/design/model-pricing-catalog.zh.md`。
 
 ## 已知缺口
 
-- **百炼的 DeepSeek 价格不同：** 同名模型在百炼上是另一套价格（例如 `deepseek-v4-flash` 不分时、¥1/¥2）。按上面的价格口径，本表按 DeepSeek 官方价计。走百炼的组织需要在 Olympus 里加租户规则覆盖。
-- **千问只有首档价：** 只收录了单次输入 ≤256K 的价格，更高档位的人民币价还没核对。
-- **已退役的名字不计价：** `deepseek-chat`、`deepseek-reasoner`、`gpt-5.x-codex` 这些名字都没收录，用到时会显示为“未计价”。
+- **百炼的 DeepSeek 价格不同：** 同名模型在百炼上是另一套价格。比如百炼按忙时（北京时间 8-22 点）和闲时分价，时段和单价都与 DeepSeek 官方不同。按上面的价格口径，本表按 DeepSeek 官方价计，走百炼的组织需要在 Olympus 里加租户规则覆盖。
+- **千问按北京地域原价：** 百炼的限时折扣、免费额度、Batch 半价以及其他地域的价格都不计入。缓存命中统一按隐式缓存价（输入的 20%）计，显式缓存命中（输入的 10%）的情况会略微高估。
+- **已退役的型号按最后的官方价计：**
+  - `deepseek-chat` / `deepseek-reasoner` 按退役前指向的 `deepseek-v4-flash` 计；
+  - `gpt-5.x-codex` 等 litellm 标记退役的型号保留最后价格，条目里写明了退役日期；
+  - `qwen-turbo` 已不在百炼价目页上，保留最后一次核对到的价格。
 - **音频、图像按模态单独计价的部分**（如 Gemini 的音频输入、OpenAI 的 realtime）不在本格式范围内。
 
 ## 致谢与许可

@@ -64,6 +64,16 @@ class ValidatorTest(unittest.TestCase):
         ]
         self.assert_rejected(catalog(entry(tiers=tiers)), "IANA")
 
+    def test_reasoning_condition_takes_only_used_true(self) -> None:
+        def with_condition(condition: dict[str, Any]) -> dict[str, Any]:
+            return catalog(entry(tiers=[
+                {"name": "标准", "rates": {"input": 1, "output": 2}},
+                {"name": "思考模式", "priority": 10, "when": [condition], "rates": {"input": 1, "output": 8}},
+            ]))
+
+        validate(with_condition({"reasoning": {"used": True}}))
+        self.assert_rejected(with_condition({"reasoning": {"used": False}}), "reasoning takes exactly")
+
     def test_unknown_rate_key_is_refused(self) -> None:
         self.assert_rejected(catalog(entry(tiers=[{"name": "标准", "rates": {"input": 1, "output": 1, "audio": 3}}])), "unknown rate keys")
 

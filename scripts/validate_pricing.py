@@ -104,6 +104,9 @@ def check_condition(condition: object, where: str) -> None:
             or not all(isinstance(d, int) and 1 <= d <= 7 for d in weekdays)
         ):
             raise CatalogError(f"{where}: time_window.weekdays must be ISO days 1..7")
+    elif kind == "reasoning":
+        if body != {"used": True}:
+            raise CatalogError(f'{where}: reasoning takes exactly {{"used": true}}')
     elif kind == "service_tier":
         values = body.get("in") if isinstance(body, dict) else None
         if not isinstance(values, list) or not values or not all(isinstance(v, str) and v for v in values):
