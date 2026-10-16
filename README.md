@@ -1,15 +1,6 @@
 # olympus-config
 
-Olympus 的平台级公共配置。目前只有一份：**模型价目表**。
-
-| 文件 | 说明 |
-|---|---|
-| `pricing/model-prices.json` | **生成的**价目表，不要手改。Olympus 平台管理员把它的 raw 链接配成"价格源"，平台每天拉取一次 |
-| `pricing/curated.json` | **我们自己维护的条目**：上游没有或口径不对的模型（DeepSeek 分时价、百炼人民币价）以及非 token 计价项 |
-| `scripts/build_pricing.py` | 拉取上游价目、和手工条目合并，生成 `model-prices.json` |
-| `scripts/validate_pricing.py` | 校验价目表。Olympus 同步时用同样的规则，一条不过整份拒收 |
-| `scripts/pricing_diff.py` | 生成同步 PR 的变更摘要 |
-| `.github/workflows/sync-pricing.yml` | 每日同步任务 |
+Olympus 的平台级公共配置。目前包含**模型价目表**：Olympus 按它给每次模型调用和工具调用计价。
 
 价格源链接：
 
@@ -17,61 +8,47 @@ Olympus 的平台级公共配置。目前只有一份：**模型价目表**。
 https://raw.githubusercontent.com/evg-agentic/olympus-config/main/pricing/model-prices.json
 ```
 
-## 更新价目
+## 仓库结构
 
-### 自动同步（日常）
-
-GitHub Actions 每天 UTC 06:30（北京 14:30）运行 `sync-pricing.yml`：
-
-1. 拉取 langfuse、litellm 价目文件的最新版本，并记下各自的提交号；
-2. 和 `pricing/curated.json` 合并，跑单元测试和校验；
-3. 如果生成的价目有变化，就开一个 PR（分支 `bot/sync-model-prices`；已有未合并的 PR 就更新它）。PR 正文列出新增、删除和改价的条目，以及上游版本的对比链接。
-
-上游有提交但我们收录的价格没变时不会开 PR。合并 PR 后，Olympus 在下一次同步时拉到新价目，只影响之后的调用。
-
-也可以在 Actions 页面手动触发同步。
-
-### 改手工条目
-
-直接改 `pricing/curated.json` 并推到 `main`。推送会立刻触发同步任务，重新生成价目并开 PR。想在本地先看效果，可以这样跑：
-
-```bash
-GH_TOKEN=$(gh auth token) python3 scripts/build_pricing.py --summary /tmp/pr-body.md
-python3 -m unittest discover -s tests
-```
-
-只用 Python 标准库，不需要安装依赖。不带 token 也能跑，但 GitHub API 匿名访问容易被限流。
+| 路径 | 说明 |
+|---|---|
+| `pricing/model-prices.json` | 价目表，由构建脚本生成，不要手改 |
+| `pricing/curated.json` | 自行维护的条目：上游价目表没有收录或口径不同的模型，以及按次、按张、按秒计价的项目 |
+| `scripts/build_pricing.py` | 拉取上游价目，和 `curated.json` 合并，生成价目表 |
+| `scripts/validate_pricing.py` | 校验价目表，规则和 Olympus 同步价格源时一致 |
+| `scripts/pricing_diff.py` | 生成价目变更摘要 |
+| `tests/` | 单元测试 |
+| `.github/workflows/` | 每日同步与校验 |
 
 ## 价格口径
 
-**一律按模型厂商的官方价目**：模型由谁发布，就以谁的官方 API 定价为准。DeepSeek 看 DeepSeek，千问看阿里云百炼，Claude 看 Anthropic。
+一律按模型厂商的官方价目：模型由谁发布，就以谁的官方 API 定价为准。DeepSeek 按 DeepSeek，千问按阿里云百炼，Claude 按 Anthropic。
 
-经第三方渠道调用时，价格可能和官方价不一致，例如百炼上的 DeepSeek、各家云上转售的模型。这种差价不写进本表，由使用该渠道的组织在 Olympus 里自己加租户规则覆盖。
+经第三方渠道（如云厂商转售）调用时，实际价格可能不同，这部分不在本表中，由使用该渠道的组织在 Olympus 中用租户规则覆盖。
 
-## 数据来源与优先级
+范围：
 
-计价时按文件顺序找第一个命中的条目。构建脚本按下面的顺序排列条目，同一个模型名以排在前面的来源为准：
+- 按厂商公开的标准价，不含限时折扣、免费额度和 Batch 价。
+- 千问按百炼华北 2（北京）地域的人民币价；缓存命中按隐式缓存价计。
+- 已退役的型号保留最后的官方价，条目的 `note` 中写明。
+- 音频、图像等按模态单独计价的部分不在本格式范围内。
 
-1. **`curated.json`**（手工维护）：
-   - DeepSeek：按官方价目页，含高峰/空闲分时价；
-   - 阿里云百炼的千问、向量模型、视觉模型：人民币价，含上下文阶梯和思考模式的输出价；
-   - Tavily、通义万相、Supadata、语音识别：按次、按张、按 credit、按秒计价。
-2. **[langfuse](https://github.com/langfuse/langfuse) `default-model-prices.json`**：OpenAI、Anthropic、Google。
-   - 正则保留原样，覆盖 Bedrock、Vertex、Azure 等命名。
-   - 原来的档位换算成本仓库的条件档：上下文阶梯，以及 priority/flex/fast 服务档位。
-   - langfuse 每天用 CI 对照各厂商官方价目做审计。
-3. **[litellm](https://github.com/BerriAI/litellm) `model_prices_and_context_window.json`**：
-   - 补 langfuse 没有的厂商：xAI、Moonshot、MiniMax、智谱（zai）、Mistral；
-   - 再补 OpenAI 在 langfuse 里缺的型号。
-   - 同一厂商里价格相同的型号合并成一条。
-   - 已标记退役（`deprecation_date` 已过）的型号不收。
+## 数据来源
+
+计价时按文件顺序取第一个命中的条目。价目表中的条目按以下来源依次排列，同一模型以排在前面的来源为准：
+
+1. **`pricing/curated.json`**：DeepSeek（含高峰 / 空闲分时价）、阿里云百炼的千问系列（含上下文阶梯和思考模式价）、向量与视觉模型，以及 Tavily、通义万相、Supadata、语音识别等非 token 计价项。
+2. **[langfuse](https://github.com/langfuse/langfuse)** `worker/src/constants/default-model-prices.json`：OpenAI、Anthropic、Google。匹配正则沿用原文件，覆盖 Bedrock、Vertex、Azure 等命名；上下文阶梯与服务档位换算为本仓库的条件档。
+3. **[litellm](https://github.com/BerriAI/litellm)** `model_prices_and_context_window.json`：xAI、Moonshot、MiniMax、智谱、Mistral，以及 OpenAI 在 langfuse 中未收录的型号。同一厂商中价格相同的型号合并为一条。
+
+价目表的 `sources` 字段记录了生成时所用的上游提交。
 
 ## 格式（schema_version 1）
 
 ```json
 {
   "id": "deepseek-v4-flash",
-  "match": "(?i)^(deepseek/)?deepseek-v4-flash(-vision-exp)?$",
+  "match": "(?i)^(deepseek/)?deepseek-v4-flash$",
   "unit": "mtok",
   "currency": "CNY",
   "source": "价格出处",
@@ -86,38 +63,48 @@ python3 -m unittest discover -s tests
 }
 ```
 
-- **`match`**：Python 正则，用 `re.search` 匹配原样的模型名或计费键，大小写由 `(?i)` 声明。长度不超过 200，不允许嵌套的无界重复（防止灾难性回溯）。
-- **`examples`**：必须落到本条目的计费键。校验时逐个检查：如果某个例子被排在前面的条目抢先命中，就说明那条正则写宽了，整份拒收。
-- **`unit`**：`mtok`（每百万 token）、`request`、`image`、`credit` 或 `second`。
-- **`currency`**：`USD` 或 `CNY`，费率按原币种填写。
-- **`tiers`**：恰好一档没有 `when`，这档就是默认档。条件档的规则：
-  - 条件之间是“与”的关系；
-  - 同时命中多档时取 `priority` 最高的一档，作用于整次调用；
-  - 没写的费率沿用**默认档**，不是相邻的档。所以叠加条件的档（比如“输入 >128K · 思考模式”）要把费率写全。
-- **费率键**：`input`、`output`、`cache_read`、`cache_write_5m`、`cache_write_1h`；非 token 条目只有 `per_unit`。全为 0 的档必须写 `zero_reason`。
-- **条件**：
-  - `input_tokens {gt|gte: N}`：全部输入，含缓存读写；
-  - `time_window {tz, hours, weekdays?}`：按调用开始时间判断，时段可以跨零点；
-  - `service_tier {in: [...]}`：请求的服务档位。Anthropic 的 `speed: fast` 也按 `fast` 上报；
-  - `reasoning {used: true}`：本次调用产生了思考 token。有些模型思考模式的输出更贵，例如百炼的 `qwen-plus`。
+| 字段 | 说明 |
+|---|---|
+| `id` | 条目标识，`[a-z0-9._-]{1,32}`，文件内唯一 |
+| `match` | Python 正则，用 `re.search` 匹配原样的模型名或计费键；不超过 200 字符，不允许嵌套的无界重复 |
+| `unit` | `mtok`（每百万 token）、`request`、`image`、`credit`、`second` |
+| `currency` | `USD` 或 `CNY`，费率按原币种填写 |
+| `examples` | 必须匹配到本条目的计费键，用于校验正则没有写得过宽 |
+| `source` / `note` | 价格出处与说明，仅供阅读 |
+| `tiers` | 计价档位，见下文 |
 
-完整设计见 olympus 仓库 `docs/design/model-pricing-catalog.zh.md`。
+**档位**：恰好一档不带 `when`，为默认档。条件档的 `when` 中所有条件同时成立才命中；命中多档时取 `priority` 最高的一档，作用于整次调用。条件档未写的费率取默认档的值，因此叠加多个条件的档应写全费率。
 
-## 已知缺口
+**费率键**：`input`、`output`、`cache_read`、`cache_write_5m`、`cache_write_1h`；非 token 条目只有 `per_unit`。费率全为 0 的档必须填写 `zero_reason`。
 
-- **百炼的 DeepSeek 价格不同：** 同名模型在百炼上是另一套价格。比如百炼按忙时（北京时间 8-22 点）和闲时分价，时段和单价都与 DeepSeek 官方不同。按上面的价格口径，本表按 DeepSeek 官方价计，走百炼的组织需要在 Olympus 里加租户规则覆盖。
-- **千问按北京地域原价：** 百炼的限时折扣、免费额度、Batch 半价以及其他地域的价格都不计入。缓存命中统一按隐式缓存价（输入的 20%）计，显式缓存命中（输入的 10%）的情况会略微高估。
-- **已退役的型号按最后的官方价计：**
-  - `deepseek-chat` / `deepseek-reasoner` 按退役前指向的 `deepseek-v4-flash` 计；
-  - `gpt-5.x-codex` 等 litellm 标记退役的型号保留最后价格，条目里写明了退役日期；
-  - `qwen-turbo` 已不在百炼价目页上，保留最后一次核对到的价格。
-- **音频、图像按模态单独计价的部分**（如 Gemini 的音频输入、OpenAI 的 realtime）不在本格式范围内。
+**条件**：
+
+| 条件 | 写法 | 含义 |
+|---|---|---|
+| `input_tokens` | `{"gt": N}` 或 `{"gte": N}` | 本次调用的全部输入 token（含缓存读写） |
+| `time_window` | `{"tz": "Asia/Shanghai", "hours": ["HH:MM-HH:MM"], "weekdays": [1, 2, 3, 4, 5]}` | 调用开始时间落在时段内；时段可跨零点，`weekdays` 可省略 |
+| `service_tier` | `{"in": ["priority"]}` | 请求的服务档位 |
+| `reasoning` | `{"used": true}` | 本次调用产生了思考 token |
+
+## 更新
+
+GitHub Actions 每天运行同步任务：拉取上游最新价目，与 `curated.json` 合并并校验；价目有变化时开 PR，PR 正文列出新增、删除和改价的条目，合并后生效。修改 `curated.json` 并推送到 `main` 时也会触发同步。
+
+本地构建与测试只需 Python 3.12 标准库：
+
+```bash
+python3 scripts/build_pricing.py
+python3 scripts/validate_pricing.py pricing/model-prices.json
+python3 -m unittest discover -s tests
+```
+
+构建脚本会调用 GitHub API 查询上游提交，设置 `GH_TOKEN` 或 `GITHUB_TOKEN` 可避免匿名访问限流。
 
 ## 致谢与许可
 
-价目数据有很大一部分来自下面两个开源项目，感谢它们的维护者长期跟进各家厂商的价格：
+价目数据有很大一部分来自以下开源项目，感谢它们的维护者持续跟进各厂商的价格：
 
-- [langfuse/langfuse](https://github.com/langfuse/langfuse)：`worker/src/constants/default-model-prices.json`，MIT 许可，Copyright (c) 2023-2026 ClickHouse, Inc.
-- [BerriAI/litellm](https://github.com/BerriAI/litellm)：`model_prices_and_context_window.json`，MIT 许可，Copyright (c) 2023 Berri AI
+- [langfuse/langfuse](https://github.com/langfuse/langfuse)，MIT 许可，Copyright (c) 2023-2026 ClickHouse, Inc.
+- [BerriAI/litellm](https://github.com/BerriAI/litellm)，MIT 许可，Copyright (c) 2023 Berri AI
 
-我们按本仓库的格式转换并选用了其中的条目，原版权和许可声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
+本仓库按自身格式转换并选用了其中的条目，原版权与许可声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。
