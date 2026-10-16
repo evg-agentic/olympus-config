@@ -1,0 +1,6149 @@
+{
+  "schema_version": 1,
+  "updated_at": "2026-10-16",
+  "sources": [
+    {
+      "name": "curated",
+      "url": "pricing/curated.json"
+    },
+    {
+      "name": "langfuse",
+      "url": "https://raw.githubusercontent.com/langfuse/langfuse/main/worker/src/constants/default-model-prices.json"
+    },
+    {
+      "name": "litellm",
+      "url": "https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json"
+    }
+  ],
+  "models": [
+    {
+      "id": "deepseek-v4-flash",
+      "match": "(?i)^(deepseek/)?deepseek-v4-flash(-vision-exp)?$",
+      "unit": "mtok",
+      "currency": "CNY",
+      "source": "DeepSeek 官方价目（中文站）https://api-docs.deepseek.com/zh-cn/quick_start/pricing ，2026-10-16 核对",
+      "note": "默认档是空闲时段价；高峰时段（北京时间工作日 9-12、14-18 点）价格翻倍。百炼上的 deepseek-v4-flash 是另一套价格，走百炼的组织需要加租户规则覆盖。",
+      "examples": [
+        "deepseek-v4-flash",
+        "deepseek/deepseek-v4-flash",
+        "deepseek-v4-flash-vision-exp"
+      ],
+      "tiers": [
+        {
+          "name": "空闲时段",
+          "rates": {
+            "input": 1.5,
+            "output": 4.5,
+            "cache_read": 0.05
+          }
+        },
+        {
+          "name": "高峰时段",
+          "priority": 10,
+          "when": [
+            {
+              "time_window": {
+                "tz": "Asia/Shanghai",
+                "hours": [
+                  "09:00-12:00",
+                  "14:00-18:00"
+                ],
+                "weekdays": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 3.0,
+            "output": 9.0,
+            "cache_read": 0.1
+          }
+        }
+      ]
+    },
+    {
+      "id": "deepseek-v4-pro",
+      "match": "(?i)^(deepseek/)?deepseek-v4-pro$",
+      "unit": "mtok",
+      "currency": "CNY",
+      "source": "DeepSeek 官方价目（中文站）https://api-docs.deepseek.com/zh-cn/quick_start/pricing ，2026-10-16 核对",
+      "note": "默认档是空闲时段价；高峰时段价格翻倍。",
+      "examples": [
+        "deepseek-v4-pro",
+        "deepseek/deepseek-v4-pro"
+      ],
+      "tiers": [
+        {
+          "name": "空闲时段",
+          "rates": {
+            "input": 4.5,
+            "output": 13.5,
+            "cache_read": 0.15
+          }
+        },
+        {
+          "name": "高峰时段",
+          "priority": 10,
+          "when": [
+            {
+              "time_window": {
+                "tz": "Asia/Shanghai",
+                "hours": [
+                  "09:00-12:00",
+                  "14:00-18:00"
+                ],
+                "weekdays": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 9.0,
+            "output": 27.0,
+            "cache_read": 0.3
+          }
+        }
+      ]
+    },
+    {
+      "id": "deepseek-flash",
+      "match": "(?i)^(deepseek/)?deepseek-flash$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "DeepSeek 官方价目（英文站）https://api-docs.deepseek.com/quick_start/pricing ，2026-10-16 核对",
+      "note": "DeepSeek-V4.1-Flash。默认档是空闲时段价；高峰时段（UTC 工作日 01-04、06-10 点）价格翻倍。",
+      "examples": [
+        "deepseek-flash",
+        "deepseek/deepseek-flash"
+      ],
+      "tiers": [
+        {
+          "name": "空闲时段",
+          "rates": {
+            "input": 0.15,
+            "output": 0.6,
+            "cache_read": 0.003
+          }
+        },
+        {
+          "name": "高峰时段",
+          "priority": 10,
+          "when": [
+            {
+              "time_window": {
+                "tz": "UTC",
+                "hours": [
+                  "01:00-04:00",
+                  "06:00-10:00"
+                ],
+                "weekdays": [
+                  1,
+                  2,
+                  3,
+                  4,
+                  5
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.3,
+            "output": 1.2,
+            "cache_read": 0.006
+          }
+        }
+      ]
+    },
+    {
+      "id": "qwen3.7-plus",
+      "match": "(?i)^(dashscope/)?qwen3\\.7-plus(-latest|-\\d{4}-\\d{2}-\\d{2})?$",
+      "unit": "mtok",
+      "currency": "CNY",
+      "source": "阿里云百炼价目（北京）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-09-04 核对",
+      "note": "单次输入 ≤256K 的首档价；更高档位待核对后补。缓存读为隐式缓存命中价（输入的 20%）。",
+      "examples": [
+        "qwen3.7-plus",
+        "dashscope/qwen3.7-plus"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 8.0,
+            "cache_read": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "qwen3.6-flash",
+      "match": "(?i)^(dashscope/)?qwen3\\.6-flash(-latest|-\\d{4}-\\d{2}-\\d{2})?$",
+      "unit": "mtok",
+      "currency": "CNY",
+      "source": "阿里云百炼价目（北京）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-09-04 核对",
+      "note": "单次输入 ≤256K 的首档价。",
+      "examples": [
+        "qwen3.6-flash"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.2,
+            "output": 7.2,
+            "cache_read": 0.24
+          }
+        }
+      ]
+    },
+    {
+      "id": "qwen-max",
+      "match": "(?i)^(dashscope/)?qwen-max(-latest|-\\d{4}-\\d{2}-\\d{2})?$",
+      "unit": "mtok",
+      "currency": "CNY",
+      "source": "阿里云百炼价目（北京）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-09-04 核对",
+      "examples": [
+        "qwen-max",
+        "qwen-max-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.4,
+            "output": 9.6,
+            "cache_read": 0.48
+          }
+        }
+      ]
+    },
+    {
+      "id": "qwen-plus",
+      "match": "(?i)^(dashscope/)?qwen-plus(-latest|-\\d{4}-\\d{2}-\\d{2})?$",
+      "unit": "mtok",
+      "currency": "CNY",
+      "source": "阿里云百炼价目（北京）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-09-04 核对",
+      "examples": [
+        "qwen-plus",
+        "qwen-plus-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.8,
+            "output": 2.0,
+            "cache_read": 0.16
+          }
+        }
+      ]
+    },
+    {
+      "id": "qwen-turbo",
+      "match": "(?i)^(dashscope/)?qwen-turbo(-latest|-\\d{4}-\\d{2}-\\d{2})?$",
+      "unit": "mtok",
+      "currency": "CNY",
+      "source": "阿里云百炼价目（北京）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-09-04 核对",
+      "examples": [
+        "qwen-turbo",
+        "qwen-turbo-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.3,
+            "output": 0.6,
+            "cache_read": 0.06
+          }
+        }
+      ]
+    },
+    {
+      "id": "qwen3-vl-plus",
+      "match": "(?i)^(dashscope/)?(qwen3-vl-plus|qwen3_vl)$",
+      "unit": "mtok",
+      "currency": "CNY",
+      "source": "阿里云百炼价目（北京）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-09-04 核对",
+      "note": "qwen3_vl 是 Olympus 模型目录里的引用名，部分调用点只记得这个名字。",
+      "examples": [
+        "qwen3-vl-plus",
+        "qwen3_vl"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.0,
+            "output": 10.0,
+            "cache_read": 0.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "text-embedding-v4",
+      "match": "(?i)^(dashscope/)?text-embedding-v4$",
+      "unit": "mtok",
+      "currency": "CNY",
+      "source": "阿里云百炼价目（北京）https://help.aliyun.com/zh/model-studio/model-pricing ，2026-09-04 核对",
+      "note": "向量模型只有输入侧。",
+      "examples": [
+        "text-embedding-v4"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.5,
+            "output": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "dashscope-asr-second",
+      "match": "^dashscope:asr_second$",
+      "unit": "second",
+      "currency": "CNY",
+      "source": "阿里云百炼 qwen3-asr-flash-filetrans 价目，2026-09 核对",
+      "note": "语音识别按有声音频秒数计费，静音不计。",
+      "examples": [
+        "dashscope:asr_second"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "per_unit": 0.00022
+          }
+        }
+      ]
+    },
+    {
+      "id": "tavily-search",
+      "match": "^tavily:search$",
+      "unit": "request",
+      "currency": "USD",
+      "source": "Tavily 价目，2026-08-04 核对",
+      "examples": [
+        "tavily:search"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "per_unit": 0.008
+          }
+        }
+      ]
+    },
+    {
+      "id": "wanx-image",
+      "match": "^wanx:image$",
+      "unit": "image",
+      "currency": "USD",
+      "source": "通义万相价目，2026-08-04 核对",
+      "examples": [
+        "wanx:image"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "per_unit": 0.02
+          }
+        }
+      ]
+    },
+    {
+      "id": "supadata-credit",
+      "match": "^supadata:credit$",
+      "unit": "credit",
+      "currency": "USD",
+      "source": "Supadata 价目，2026-08-04 核对",
+      "examples": [
+        "supadata:credit"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "per_unit": 0.001
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-4o",
+      "match": "(?i)^(openai/)?(gpt-4o)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-4o"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.5,
+            "output": 10.0,
+            "cache_read": 1.25,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.25,
+            "output": 17.0,
+            "cache_read": 2.125,
+            "cache_write_5m": 4.25
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-4o-2024-05-13",
+      "match": "(?i)^(openai/)?(gpt-4o-2024-05-13)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-08-20）",
+      "examples": [
+        "gpt-4o-2024-05-13"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 5.0,
+            "output": 15.0
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 8.75,
+            "output": 26.25
+          }
+        }
+      ]
+    },
+    {
+      "id": "text-embedding-3-small",
+      "match": "(?i)^(text-embedding-3-small)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2024-01-26）",
+      "examples": [
+        "text-embedding-3-small"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.02,
+            "output": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "text-embedding-3-large",
+      "match": "(?i)^(text-embedding-3-large)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2024-01-26）",
+      "examples": [
+        "text-embedding-3-large"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.13,
+            "output": 0.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-3-5-sonnet-20240620",
+      "match": "(?i)^(anthropic/)?(claude-3-5-sonnet-20240620|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-3-5-sonnet-20240620-v1:0|claude-3-5-sonnet@20240620)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "examples": [
+        "claude-3-5-sonnet-20240620"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3,
+            "cache_write_5m": 3.75,
+            "cache_write_1h": 6.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-4o-mini",
+      "match": "(?i)^(openai/)?(gpt-4o-mini)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-4o-mini"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.15,
+            "output": 0.6,
+            "cache_read": 0.075,
+            "cache_write_5m": 0.15
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.25,
+            "output": 1.0,
+            "cache_read": 0.125,
+            "cache_write_5m": 0.25
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-4o-mini-2024-07-18",
+      "match": "(?i)^(openai/)?(gpt-4o-mini-2024-07-18)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-4o-mini-2024-07-18"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.15,
+            "output": 0.6,
+            "cache_read": 0.075,
+            "cache_write_5m": 0.15
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.25,
+            "output": 1.0,
+            "cache_read": 0.125,
+            "cache_write_5m": 0.25
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-4o-2024-08-06",
+      "match": "(?i)^(openai/)?(gpt-4o-2024-08-06)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-4o-2024-08-06"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.5,
+            "output": 10.0,
+            "cache_read": 1.25,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.25,
+            "output": 17.0,
+            "cache_read": 2.125,
+            "cache_write_5m": 4.25
+          }
+        }
+      ]
+    },
+    {
+      "id": "o1-preview",
+      "match": "(?i)^(openai/)?(o1-preview)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "o1-preview"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 15.0,
+            "output": 60.0,
+            "cache_read": 7.5,
+            "cache_write_5m": 15.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "o1-preview-2024-09-12",
+      "match": "(?i)^(openai/)?(o1-preview-2024-09-12)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "o1-preview-2024-09-12"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 15.0,
+            "output": 60.0,
+            "cache_read": 7.5,
+            "cache_write_5m": 15.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "o1-mini",
+      "match": "(?i)^(openai/)?(o1-mini)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "o1-mini"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.1,
+            "output": 4.4,
+            "cache_read": 0.55,
+            "cache_write_5m": 1.1
+          }
+        }
+      ]
+    },
+    {
+      "id": "o1-mini-2024-09-12",
+      "match": "(?i)^(openai/)?(o1-mini-2024-09-12)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "o1-mini-2024-09-12"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.1,
+            "output": 4.4,
+            "cache_read": 0.55,
+            "cache_write_5m": 1.1
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-3.5-sonnet-20241022",
+      "match": "(?i)^(anthropic/)?(claude-3-5-sonnet-20241022|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-3-5-sonnet-20241022-v2:0|claude-3-5-sonnet-V2@20241022)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "examples": [
+        "claude-3-5-sonnet-20241022"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3,
+            "cache_write_5m": 3.75,
+            "cache_write_1h": 6.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-3.5-sonnet-latest",
+      "match": "(?i)^(anthropic/)?(claude-3-5-sonnet-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-04-13）",
+      "examples": [
+        "claude-3-5-sonnet-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3,
+            "cache_write_5m": 3.75,
+            "cache_write_1h": 6.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-3-5-haiku-20241022",
+      "match": "(?i)^(anthropic/)?(claude-3-5-haiku-20241022|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-3-5-haiku-20241022-v1:0|claude-3-5-haiku-V1@20241022)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "examples": [
+        "claude-3-5-haiku-20241022"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.8,
+            "output": 4.0,
+            "cache_read": 0.08,
+            "cache_write_5m": 1.0,
+            "cache_write_1h": 1.6
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-3.5-haiku-latest",
+      "match": "(?i)^(anthropic/)?(claude-3-5-haiku-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-04-13）",
+      "examples": [
+        "claude-3-5-haiku-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.8,
+            "output": 4.0,
+            "cache_read": 0.08,
+            "cache_write_5m": 1.0,
+            "cache_write_1h": 1.6
+          }
+        }
+      ]
+    },
+    {
+      "id": "chatgpt-4o-latest",
+      "match": "(?i)^(chatgpt-4o-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2024-11-25）",
+      "examples": [
+        "chatgpt-4o-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 5.0,
+            "output": 15.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-4o-2024-11-20",
+      "match": "(?i)^(openai/)?(gpt-4o-2024-11-20)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-4o-2024-11-20"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.5,
+            "output": 10.0,
+            "cache_read": 1.25,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.25,
+            "output": 17.0,
+            "cache_read": 2.125,
+            "cache_write_5m": 4.25
+          }
+        }
+      ]
+    },
+    {
+      "id": "o1",
+      "match": "(?i)^(openai/)?(o1)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "o1"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 15.0,
+            "output": 60.0,
+            "cache_read": 7.5,
+            "cache_write_5m": 15.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "o1-2024-12-17",
+      "match": "(?i)^(openai/)?(o1-2024-12-17)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "o1-2024-12-17"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 15.0,
+            "output": 60.0,
+            "cache_read": 7.5,
+            "cache_write_5m": 15.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "o3-mini",
+      "match": "(?i)^(openai/)?(o3-mini)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "o3-mini"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.1,
+            "output": 4.4,
+            "cache_read": 0.55,
+            "cache_write_5m": 1.1
+          }
+        }
+      ]
+    },
+    {
+      "id": "o3-mini-2025-01-31",
+      "match": "(?i)^(openai/)?(o3-mini-2025-01-31)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "o3-mini-2025-01-31"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.1,
+            "output": 4.4,
+            "cache_read": 0.55,
+            "cache_write_5m": 1.1
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-2.0-flash-001",
+      "match": "(?i)^(google(ai)?/)?(gemini-2.0-flash-001)(@[a-zA-Z0-9]+)?$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-03-06）",
+      "examples": [
+        "gemini-2.0-flash-001"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.1,
+            "output": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-2.0-flash-lite-preview-02",
+      "match": "(?i)^(google(ai)?/)?(gemini-2.0-flash-lite-preview-02-05)(@[a-zA-Z0-9]+)?$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-03-06）",
+      "examples": [
+        "gemini-2.0-flash-lite-preview-02-05"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.075,
+            "output": 0.3
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-3.7-sonnet-20250219",
+      "match": "(?i)^(anthropic/)?(claude-3.7-sonnet-20250219|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-3.7-sonnet-20250219-v1:0|claude-3-7-sonnet-V1@20250219)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "examples": [
+        "claude-3.7-sonnet-20250219"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3,
+            "cache_write_5m": 3.75,
+            "cache_write_1h": 6.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-3.7-sonnet-latest",
+      "match": "(?i)^(anthropic/)?(claude-3-7-sonnet-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-04-13）",
+      "examples": [
+        "claude-3-7-sonnet-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3,
+            "cache_write_5m": 3.75,
+            "cache_write_1h": 6.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-4.1",
+      "match": "(?i)^(openai/)?(gpt-4.1)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-4.1"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 8.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 2.0
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 3.5,
+            "output": 14.0,
+            "cache_read": 0.875,
+            "cache_write_5m": 3.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-4.1-2025-04-14",
+      "match": "(?i)^(openai/)?(gpt-4.1-2025-04-14)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-4.1-2025-04-14"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 8.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 2.0
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 3.5,
+            "output": 14.0,
+            "cache_read": 0.875,
+            "cache_write_5m": 3.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-4.1-mini-2025-04-14",
+      "match": "(?i)^(openai/)?(gpt-4.1-mini-2025-04-14)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-4.1-mini-2025-04-14"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.4,
+            "output": 1.6,
+            "cache_read": 0.1,
+            "cache_write_5m": 0.4
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.7,
+            "output": 2.8,
+            "cache_read": 0.175,
+            "cache_write_5m": 0.7
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-4.1-nano-2025-04-14",
+      "match": "(?i)^(openai/)?(gpt-4.1-nano-2025-04-14)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-4.1-nano-2025-04-14"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.1,
+            "output": 0.4,
+            "cache_read": 0.025,
+            "cache_write_5m": 0.1
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.2,
+            "output": 0.8,
+            "cache_read": 0.05,
+            "cache_write_5m": 0.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "o3",
+      "match": "(?i)^(openai/)?(o3)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "o3"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 8.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 2.0
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 3.5,
+            "output": 14.0,
+            "cache_read": 0.875,
+            "cache_write_5m": 3.5
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 1.0,
+            "output": 4.0,
+            "cache_read": 0.25,
+            "cache_write_5m": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "o3-2025-04-16",
+      "match": "(?i)^(openai/)?(o3-2025-04-16)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "o3-2025-04-16"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 8.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 2.0
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 3.5,
+            "output": 14.0,
+            "cache_read": 0.875,
+            "cache_write_5m": 3.5
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 1.0,
+            "output": 4.0,
+            "cache_read": 0.25,
+            "cache_write_5m": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "o4-mini",
+      "match": "(?i)^(openai/)?(o4-mini)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "o4-mini"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.1,
+            "output": 4.4,
+            "cache_read": 0.275,
+            "cache_write_5m": 1.1
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.0,
+            "output": 8.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 2.0
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.55,
+            "output": 2.2,
+            "cache_read": 0.138,
+            "cache_write_5m": 0.55
+          }
+        }
+      ]
+    },
+    {
+      "id": "o4-mini-2025-04-16",
+      "match": "(?i)^(openai/)?(o4-mini-2025-04-16)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "o4-mini-2025-04-16"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.1,
+            "output": 4.4,
+            "cache_read": 0.275,
+            "cache_write_5m": 1.1
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.0,
+            "output": 8.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 2.0
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.55,
+            "output": 2.2,
+            "cache_read": 0.138,
+            "cache_write_5m": 0.55
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-2.0-flash",
+      "match": "(?i)^(google(ai)?/)?(gemini-2.0-flash)(@[a-zA-Z0-9]+)?$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-03-06）",
+      "examples": [
+        "gemini-2.0-flash"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.1,
+            "output": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-2.0-flash-lite-preview",
+      "match": "(?i)^(google(ai)?/)?(gemini-2.0-flash-lite-preview)(@[a-zA-Z0-9]+)?$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-03-06）",
+      "examples": [
+        "gemini-2.0-flash-lite-preview"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.075,
+            "output": 0.3
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-4.1-nano",
+      "match": "(?i)^(openai/)?(gpt-4.1-nano)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-4.1-nano"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.1,
+            "output": 0.4,
+            "cache_read": 0.025,
+            "cache_write_5m": 0.1
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.2,
+            "output": 0.8,
+            "cache_read": 0.05,
+            "cache_write_5m": 0.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-4.1-mini",
+      "match": "(?i)^(openai/)?(gpt-4.1-mini)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-4.1-mini"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.4,
+            "output": 1.6,
+            "cache_read": 0.1,
+            "cache_write_5m": 0.4
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.7,
+            "output": 2.8,
+            "cache_read": 0.175,
+            "cache_write_5m": 0.7
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-sonnet-4-5-20250929",
+      "match": "(?i)^(anthropic/)?(claude-sonnet-4-5(-20250929)?|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-sonnet-4-5(-20250929)?-v1(:0)?|claude-sonnet-4-5-V1(@20250929)?|claude-sonnet-4-5(@20250929)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-08-04）",
+      "examples": [
+        "claude-sonnet-4-5-20250929"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3,
+            "cache_write_5m": 3.75,
+            "cache_write_1h": 6.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-sonnet-4-20250514",
+      "match": "(?i)^(anthropic/)?(claude-sonnet-4(-20250514)?|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-sonnet-4(-20250514)?-v1(:0)?|claude-sonnet-4-V1(@20250514)?|claude-sonnet-4(@20250514)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "examples": [
+        "claude-sonnet-4-20250514"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3,
+            "cache_write_5m": 3.75,
+            "cache_write_1h": 6.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-sonnet-4-latest",
+      "match": "(?i)^(anthropic/)?(claude-sonnet-4-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-04-13）",
+      "examples": [
+        "claude-sonnet-4-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3,
+            "cache_write_5m": 3.75,
+            "cache_write_1h": 6.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-opus-4-20250514",
+      "match": "(?i)^(anthropic/)?(claude-opus-4(-20250514)?|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-4(-20250514)?-v1(:0)?|claude-opus-4(@20250514)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "examples": [
+        "claude-opus-4-20250514"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 15.0,
+            "output": 75.0,
+            "cache_read": 1.5,
+            "cache_write_5m": 18.75,
+            "cache_write_1h": 30.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "o3-pro",
+      "match": "(?i)^(openai/)?(o3-pro)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2025-12-12）",
+      "examples": [
+        "o3-pro"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 20.0,
+            "output": 80.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "o3-pro-2025-06-10",
+      "match": "(?i)^(openai/)?(o3-pro-2025-06-10)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2025-12-12）",
+      "examples": [
+        "o3-pro-2025-06-10"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 20.0,
+            "output": 80.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "o1-pro",
+      "match": "(?i)^(openai/)?(o1-pro)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2025-12-12）",
+      "examples": [
+        "o1-pro"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 150.0,
+            "output": 600.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "o1-pro-2025-03-19",
+      "match": "(?i)^(openai/)?(o1-pro-2025-03-19)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2025-12-12）",
+      "examples": [
+        "o1-pro-2025-03-19"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 150.0,
+            "output": 600.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-2.5-flash",
+      "match": "(?i)^(google(ai)?/)?(gemini-2.5-flash)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-14）",
+      "examples": [
+        "gemini-2.5-flash"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.3,
+            "output": 2.5,
+            "cache_read": 0.03
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.54,
+            "output": 4.5,
+            "cache_read": 0.054
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-2.5-flash-lite",
+      "match": "(?i)^(google(ai)?/)?(gemini-2.5-flash-lite)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-14）",
+      "examples": [
+        "gemini-2.5-flash-lite"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.1,
+            "output": 0.4,
+            "cache_read": 0.01
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.18,
+            "output": 0.72,
+            "cache_read": 0.018
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-opus-4-1-20250805",
+      "match": "(?i)^(anthropic/)?(claude-opus-4-1(-20250805)?|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-4-1(-20250805)?-v1(:0)?|claude-opus-4-1(@20250805)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "examples": [
+        "claude-opus-4-1-20250805"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 15.0,
+            "output": 75.0,
+            "cache_read": 1.5,
+            "cache_write_5m": 18.75,
+            "cache_write_1h": 30.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5",
+      "match": "(?i)^(openai/)?(gpt-5)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.25,
+            "output": 10.0,
+            "cache_read": 0.125,
+            "cache_write_5m": 1.25
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.5,
+            "output": 20.0,
+            "cache_read": 0.25,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.625,
+            "output": 5.0,
+            "cache_read": 0.0625,
+            "cache_write_5m": 0.625
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5-2025-08-07",
+      "match": "(?i)^(openai/)?(gpt-5-2025-08-07)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5-2025-08-07"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.25,
+            "output": 10.0,
+            "cache_read": 0.125,
+            "cache_write_5m": 1.25
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.5,
+            "output": 20.0,
+            "cache_read": 0.25,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.625,
+            "output": 5.0,
+            "cache_read": 0.0625,
+            "cache_write_5m": 0.625
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5-mini",
+      "match": "(?i)^(openai/)?(gpt-5-mini)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5-mini"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.25,
+            "output": 2.0,
+            "cache_read": 0.025,
+            "cache_write_5m": 0.25
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.45,
+            "output": 3.6,
+            "cache_read": 0.045,
+            "cache_write_5m": 0.45
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.125,
+            "output": 1.0,
+            "cache_read": 0.0125,
+            "cache_write_5m": 0.125
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5-mini-2025-08-07",
+      "match": "(?i)^(openai/)?(gpt-5-mini-2025-08-07)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5-mini-2025-08-07"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.25,
+            "output": 2.0,
+            "cache_read": 0.025,
+            "cache_write_5m": 0.25
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.45,
+            "output": 3.6,
+            "cache_read": 0.045,
+            "cache_write_5m": 0.45
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.125,
+            "output": 1.0,
+            "cache_read": 0.0125,
+            "cache_write_5m": 0.125
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5-nano",
+      "match": "(?i)^(openai/)?(gpt-5-nano)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5-nano"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.05,
+            "output": 0.4,
+            "cache_read": 0.005,
+            "cache_write_5m": 0.05
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.025,
+            "output": 0.2,
+            "cache_read": 0.0025,
+            "cache_write_5m": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5-nano-2025-08-07",
+      "match": "(?i)^(openai/)?(gpt-5-nano-2025-08-07)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5-nano-2025-08-07"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.05,
+            "output": 0.4,
+            "cache_read": 0.005,
+            "cache_write_5m": 0.05
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.025,
+            "output": 0.2,
+            "cache_read": 0.0025,
+            "cache_write_5m": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5-chat-latest",
+      "match": "(?i)^(openai/)?(gpt-5-chat-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5-chat-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.25,
+            "output": 10.0,
+            "cache_read": 0.125,
+            "cache_write_5m": 1.25
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5-pro",
+      "match": "(?i)^(openai/)?(gpt-5-pro)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2025-12-12）",
+      "examples": [
+        "gpt-5-pro"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 15.0,
+            "output": 120.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5-pro-2025-10-06",
+      "match": "(?i)^(openai/)?(gpt-5-pro-2025-10-06)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2025-12-12）",
+      "examples": [
+        "gpt-5-pro-2025-10-06"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 15.0,
+            "output": 120.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-haiku-4-5-20251001",
+      "match": "(?i)^(anthropic/)?(claude-haiku-4-5(-20251001)?|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-haiku-4-5-20251001-v1:0|claude-4-5-haiku@20251001)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "examples": [
+        "claude-haiku-4-5-20251001"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.0,
+            "output": 5.0,
+            "cache_read": 0.1,
+            "cache_write_5m": 1.25,
+            "cache_write_1h": 2.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.1",
+      "match": "(?i)^(openai/)?(gpt-5.1)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.1"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.25,
+            "output": 10.0,
+            "cache_read": 0.125,
+            "cache_write_5m": 1.25
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.5,
+            "output": 20.0,
+            "cache_read": 0.25,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.625,
+            "output": 5.0,
+            "cache_read": 0.0625,
+            "cache_write_5m": 0.625
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.1-2025-11-13",
+      "match": "(?i)^(openai/)?(gpt-5.1-2025-11-13)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.1-2025-11-13"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.25,
+            "output": 10.0,
+            "cache_read": 0.125,
+            "cache_write_5m": 1.25
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.5,
+            "output": 20.0,
+            "cache_read": 0.25,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.625,
+            "output": 5.0,
+            "cache_read": 0.0625,
+            "cache_write_5m": 0.625
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-opus-4-5-20251101",
+      "match": "(?i)^(anthropic/)?(claude-opus-4-5(-20251101)?|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-4-5(-20251101)?-v1(:0)?|claude-opus-4-5(@20251101)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "examples": [
+        "claude-opus-4-5-20251101"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 6.25,
+            "cache_write_1h": 10.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-sonnet-4-6",
+      "match": "(?i)^(anthropic\\/)?(claude-sonnet-4-6|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-sonnet-4-6(-v1(:0)?)?|claude-sonnet-4-6)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "examples": [
+        "claude-sonnet-4-6"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3,
+            "cache_write_5m": 3.75,
+            "cache_write_1h": 6.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-opus-4-6",
+      "match": "(?i)^(anthropic/)?(claude-opus-4-6|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-4-6-v1(:0)?|claude-opus-4-6)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "examples": [
+        "claude-opus-4-6"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 6.25,
+            "cache_write_1h": 10.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-opus-4-7",
+      "match": "(?i)^(anthropic/)?(claude-opus-4-7|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-4-7-v1(:0)?|claude-opus-4-7)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "examples": [
+        "claude-opus-4-7"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 6.25,
+            "cache_write_1h": 10.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-opus-4-8",
+      "match": "(?i)^((anthropic/)?claude-opus-4-8|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-4-8(-v1(:0)?)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-08-20）",
+      "examples": [
+        "claude-opus-4-8"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 6.25,
+            "cache_write_1h": 10.0
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 10.0,
+            "output": 50.0,
+            "cache_read": 1.0,
+            "cache_write_5m": 12.5,
+            "cache_write_1h": 20.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-fable-5",
+      "match": "(?i)^((anthropic/)?claude-fable-5|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-fable-5(-v1(:0)?)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "examples": [
+        "claude-fable-5"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 10.0,
+            "output": 50.0,
+            "cache_read": 1.0,
+            "cache_write_5m": 12.5,
+            "cache_write_1h": 20.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-mythos-5",
+      "match": "(?i)^(anthropic/)?claude-mythos-5$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-06-09）",
+      "examples": [
+        "claude-mythos-5"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 10.0,
+            "output": 50.0,
+            "cache_read": 1.0,
+            "cache_write_5m": 12.5,
+            "cache_write_1h": 20.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-fable-5-1",
+      "match": "(?i)^((anthropic/)?claude-fable-5-1|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-fable-5-1(-v1(:0)?)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-02）",
+      "examples": [
+        "claude-fable-5-1"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 10.0,
+            "output": 50.0,
+            "cache_read": 0.25,
+            "cache_write_5m": 12.5,
+            "cache_write_1h": 20.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-mythos-5-1",
+      "match": "(?i)^(anthropic/)?claude-mythos-5-1$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-02）",
+      "examples": [
+        "claude-mythos-5-1"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 10.0,
+            "output": 50.0,
+            "cache_read": 0.25,
+            "cache_write_5m": 12.5,
+            "cache_write_1h": 20.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-sonnet-5",
+      "match": "(?i)^((anthropic\\/)?claude-sonnet-5|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-sonnet-5(-v1(:0)?)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "examples": [
+        "claude-sonnet-5"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 10.0,
+            "cache_read": 0.2,
+            "cache_write_5m": 2.5,
+            "cache_write_1h": 4.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-sonnet-5-5",
+      "match": "(?i)^((anthropic\\/)?claude-sonnet-5-5|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-sonnet-5-5(-v1(:0)?)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-10-13）",
+      "examples": [
+        "claude-sonnet-5-5"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 10.0,
+            "cache_read": 0.1,
+            "cache_write_5m": 2.5,
+            "cache_write_1h": 4.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-opus-5",
+      "match": "(?i)^((anthropic\\/)?claude-opus-5|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-5(-v1(:0)?)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-08-20）",
+      "examples": [
+        "claude-opus-5"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 6.25,
+            "cache_write_1h": 10.0
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 10.0,
+            "output": 50.0,
+            "cache_read": 1.0,
+            "cache_write_5m": 12.5,
+            "cache_write_1h": 20.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-opus-5-5",
+      "match": "(?i)^((anthropic\\/)?claude-opus-5-5|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-5-5(-v1(:0)?)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-22）",
+      "examples": [
+        "claude-opus-5-5"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 4.0,
+            "output": 20.0,
+            "cache_read": 0.2,
+            "cache_write_5m": 5.0,
+            "cache_write_1h": 8.0
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 8.0,
+            "output": 40.0,
+            "cache_read": 0.4,
+            "cache_write_5m": 10.0,
+            "cache_write_1h": 16.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "claude-haiku-5-5",
+      "match": "(?i)^((anthropic\\/)?claude-haiku-5-5|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-haiku-5-5(-v1(:0)?)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-10-07）",
+      "examples": [
+        "claude-haiku-5-5"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.1,
+            "output": 0.5,
+            "cache_read": 0.01,
+            "cache_write_5m": 0.125,
+            "cache_write_1h": 0.2
+          }
+        },
+        {
+          "name": "长上下文 (>100K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 100000
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.5,
+            "output": 2.5,
+            "cache_read": 0.05,
+            "cache_write_5m": 0.625,
+            "cache_write_1h": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-2.5-pro",
+      "match": "(?i)^(google(ai)?/)?(gemini-2.5-pro)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-14）",
+      "examples": [
+        "gemini-2.5-pro"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.25,
+            "output": 10.0,
+            "cache_read": 0.125
+          }
+        },
+        {
+          "name": "priority 长上下文",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 200000
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.5,
+            "output": 27.0,
+            "cache_read": 0.45
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.25,
+            "output": 18.0,
+            "cache_read": 0.225
+          }
+        },
+        {
+          "name": "长上下文",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 200000
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.5,
+            "output": 15.0,
+            "cache_read": 0.25
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-3-pro-preview",
+      "match": "(?i)^(google(ai)?/)?(gemini-3-pro-preview)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-09）",
+      "examples": [
+        "gemini-3-pro-preview"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 12.0,
+            "cache_read": 0.2
+          }
+        },
+        {
+          "name": "长上下文",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 200000
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 18.0,
+            "cache_read": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-3.1-pro-preview",
+      "match": "(?i)^(google(ai)?/)?(gemini-3.1-pro-preview(-customtools)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-14）",
+      "examples": [
+        "gemini-3.1-pro-preview"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 12.0,
+            "cache_read": 0.2
+          }
+        },
+        {
+          "name": "priority 长上下文",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 200000
+              }
+            }
+          ],
+          "rates": {
+            "input": 7.2,
+            "output": 32.4,
+            "cache_read": 0.72
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 3.6,
+            "output": 21.6,
+            "cache_read": 0.36
+          }
+        },
+        {
+          "name": "长上下文",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 200000
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 18.0,
+            "cache_read": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.2",
+      "match": "(?i)^(openai/)?(gpt-5.2)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.2"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.75,
+            "output": 14.0,
+            "cache_read": 0.175,
+            "cache_write_5m": 1.75
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 3.5,
+            "output": 28.0,
+            "cache_read": 0.35,
+            "cache_write_5m": 3.5
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.875,
+            "output": 7.0,
+            "cache_read": 0.0875,
+            "cache_write_5m": 0.875
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.2-2025-12-11",
+      "match": "(?i)^(openai/)?(gpt-5.2-2025-12-11)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.2-2025-12-11"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.75,
+            "output": 14.0,
+            "cache_read": 0.175,
+            "cache_write_5m": 1.75
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 3.5,
+            "output": 28.0,
+            "cache_read": 0.35,
+            "cache_write_5m": 3.5
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.875,
+            "output": 7.0,
+            "cache_read": 0.0875,
+            "cache_write_5m": 0.875
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.2-pro",
+      "match": "(?i)^(openai/)?(gpt-5.2-pro)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2025-12-12）",
+      "examples": [
+        "gpt-5.2-pro"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 21.0,
+            "output": 168.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.2-pro-2025-12-11",
+      "match": "(?i)^(openai/)?(gpt-5.2-pro-2025-12-11)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2025-12-12）",
+      "examples": [
+        "gpt-5.2-pro-2025-12-11"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 21.0,
+            "output": 168.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.3-codex",
+      "match": "(?i)^(openai/)?(gpt-5.3-codex)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.3-codex"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.75,
+            "output": 14.0,
+            "cache_read": 0.175,
+            "cache_write_5m": 1.75
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 3.5,
+            "output": 28.0,
+            "cache_read": 0.35,
+            "cache_write_5m": 3.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.4",
+      "match": "(?i)^(openai/)?(gpt-5.4)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.4"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.5,
+            "output": 15.0,
+            "cache_read": 0.25,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "flex · 长上下文 (>272K)",
+          "priority": 40,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.5,
+            "output": 11.25,
+            "cache_read": 0.25,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 5.0,
+            "output": 30.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 5.0
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 1.25,
+            "output": 7.5,
+            "cache_read": 0.13,
+            "cache_write_5m": 1.25
+          }
+        },
+        {
+          "name": "长上下文 (>272K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 5.0,
+            "output": 22.5,
+            "cache_read": 0.5,
+            "cache_write_5m": 5.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.4-pro",
+      "match": "(?i)^(openai/)?(gpt-5.4-pro)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-08-20）",
+      "examples": [
+        "gpt-5.4-pro"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 30.0,
+            "output": 180.0
+          }
+        },
+        {
+          "name": "flex · 长上下文 (>272K)",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 30.0,
+            "output": 135.0
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 15.0,
+            "output": 90.0
+          }
+        },
+        {
+          "name": "长上下文 (>272K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 60.0,
+            "output": 270.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.4-2026-03-05",
+      "match": "(?i)^(openai/)?(gpt-5.4-2026-03-05)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.4-2026-03-05"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.5,
+            "output": 15.0,
+            "cache_read": 0.25,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "flex · 长上下文 (>272K)",
+          "priority": 40,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.5,
+            "output": 11.25,
+            "cache_read": 0.25,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 5.0,
+            "output": 30.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 5.0
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 1.25,
+            "output": 7.5,
+            "cache_read": 0.13,
+            "cache_write_5m": 1.25
+          }
+        },
+        {
+          "name": "长上下文 (>272K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 5.0,
+            "output": 22.5,
+            "cache_read": 0.5,
+            "cache_write_5m": 5.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.4-pro-2026-03-05",
+      "match": "(?i)^(openai/)?(gpt-5.4-pro-2026-03-05)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-08-20）",
+      "examples": [
+        "gpt-5.4-pro-2026-03-05"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 30.0,
+            "output": 180.0
+          }
+        },
+        {
+          "name": "flex · 长上下文 (>272K)",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 30.0,
+            "output": 135.0
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 15.0,
+            "output": 90.0
+          }
+        },
+        {
+          "name": "长上下文 (>272K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 60.0,
+            "output": 270.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.4-mini",
+      "match": "(?i)^(openai\\/)?(gpt-5.4-mini)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.4-mini"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.75,
+            "output": 4.5,
+            "cache_read": 0.075,
+            "cache_write_5m": 0.75
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 1.5,
+            "output": 9.0,
+            "cache_read": 0.15,
+            "cache_write_5m": 1.5
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.375,
+            "output": 2.25,
+            "cache_read": 0.0375,
+            "cache_write_5m": 0.375
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.4-mini-2026-03-17",
+      "match": "(?i)^(openai\\/)?(gpt-5.4-mini-2026-03-17)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.4-mini-2026-03-17"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.75,
+            "output": 4.5,
+            "cache_read": 0.075,
+            "cache_write_5m": 0.75
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 1.5,
+            "output": 9.0,
+            "cache_read": 0.15,
+            "cache_write_5m": 1.5
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.375,
+            "output": 2.25,
+            "cache_read": 0.0375,
+            "cache_write_5m": 0.375
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.4-nano",
+      "match": "(?i)^(openai\\/)?(gpt-5.4-nano)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.4-nano"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.2,
+            "output": 1.25,
+            "cache_read": 0.02,
+            "cache_write_5m": 0.2
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.1,
+            "output": 0.625,
+            "cache_read": 0.01,
+            "cache_write_5m": 0.1
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.4-nano-2026-03-17",
+      "match": "(?i)^(openai\\/)?(gpt-5.4-nano-2026-03-17)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.4-nano-2026-03-17"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.2,
+            "output": 1.25,
+            "cache_read": 0.02,
+            "cache_write_5m": 0.2
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.1,
+            "output": 0.625,
+            "cache_read": 0.01,
+            "cache_write_5m": 0.1
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.5-2026-04-23",
+      "match": "(?i)^(openai/)?(gpt-5.5(-2026-04-23)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.5-2026-04-23"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 5.0,
+            "output": 30.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 5.0
+          }
+        },
+        {
+          "name": "flex · 长上下文 (>272K)",
+          "priority": 40,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 5.0,
+            "output": 22.5,
+            "cache_read": 0.5,
+            "cache_write_5m": 5.0
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 12.5,
+            "output": 75.0,
+            "cache_read": 1.25,
+            "cache_write_5m": 12.5
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.5,
+            "output": 15.0,
+            "cache_read": 0.25,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "长上下文 (>272K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 10.0,
+            "output": 45.0,
+            "cache_read": 1.0,
+            "cache_write_5m": 10.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.5-pro-2026-04-23",
+      "match": "(?i)^(openai/)?(gpt-5.5-pro(-2026-04-23)?)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-08-20）",
+      "examples": [
+        "gpt-5.5-pro-2026-04-23"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 30.0,
+            "output": 180.0
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 15.0,
+            "output": 90.0
+          }
+        },
+        {
+          "name": "长上下文 (>272K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 60.0,
+            "output": 270.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.6-sol",
+      "match": "(?i)^(openai/)?(gpt-5.6-sol)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.6-sol"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 4.0,
+            "output": 20.0,
+            "cache_read": 0.4,
+            "cache_write_5m": 5.0
+          }
+        },
+        {
+          "name": "fast/priority · 长上下文 (>272K)",
+          "priority": 50,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 16.0,
+            "output": 60.0,
+            "cache_read": 1.6,
+            "cache_write_5m": 20.0
+          }
+        },
+        {
+          "name": "flex · 长上下文 (>272K)",
+          "priority": 40,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 15.0,
+            "cache_read": 0.4,
+            "cache_write_5m": 5.0
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 8.0,
+            "output": 40.0,
+            "cache_read": 0.8,
+            "cache_write_5m": 10.0
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.0,
+            "output": 10.0,
+            "cache_read": 0.2,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "长上下文 (>272K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 8.0,
+            "output": 30.0,
+            "cache_read": 0.8,
+            "cache_write_5m": 10.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.6-terra",
+      "match": "(?i)^(openai/)?(gpt-5.6-terra)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.6-terra"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 12.0,
+            "cache_read": 0.2,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "fast/priority · 长上下文 (>272K)",
+          "priority": 50,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 8.0,
+            "output": 36.0,
+            "cache_read": 0.8,
+            "cache_write_5m": 10.0
+          }
+        },
+        {
+          "name": "flex · 长上下文 (>272K)",
+          "priority": 40,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.0,
+            "output": 9.0,
+            "cache_read": 0.2,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 24.0,
+            "cache_read": 0.4,
+            "cache_write_5m": 5.0
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 1.0,
+            "output": 6.0,
+            "cache_read": 0.1,
+            "cache_write_5m": 1.25
+          }
+        },
+        {
+          "name": "长上下文 (>272K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 18.0,
+            "cache_read": 0.4,
+            "cache_write_5m": 5.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-5.6-luna",
+      "match": "(?i)^(openai/)?(gpt-5.6-luna)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-5.6-luna"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.2,
+            "output": 1.2,
+            "cache_read": 0.02,
+            "cache_write_5m": 0.25
+          }
+        },
+        {
+          "name": "fast/priority · 长上下文 (>272K)",
+          "priority": 50,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.8,
+            "output": 3.6,
+            "cache_read": 0.08,
+            "cache_write_5m": 1.0
+          }
+        },
+        {
+          "name": "flex · 长上下文 (>272K)",
+          "priority": 40,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.2,
+            "output": 0.9,
+            "cache_read": 0.02,
+            "cache_write_5m": 0.25
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.4,
+            "output": 2.4,
+            "cache_read": 0.04,
+            "cache_write_5m": 0.5
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.1,
+            "output": 0.6,
+            "cache_read": 0.01,
+            "cache_write_5m": 0.125
+          }
+        },
+        {
+          "name": "长上下文 (>272K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.4,
+            "output": 1.8,
+            "cache_read": 0.04,
+            "cache_write_5m": 0.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-6-astra",
+      "match": "(?i)^(openai/)?(gpt-6-astra)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-30）",
+      "examples": [
+        "gpt-6-astra"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 10.0,
+            "output": 50.0,
+            "cache_read": 1.0,
+            "cache_write_5m": 12.5
+          }
+        },
+        {
+          "name": "ultrafast · 长上下文 (>272K)",
+          "priority": 70,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "ultrafast"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 120.0,
+            "output": 450.0,
+            "cache_read": 12.0,
+            "cache_write_5m": 150.0
+          }
+        },
+        {
+          "name": "fast/priority · 长上下文 (>272K)",
+          "priority": 60,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 40.0,
+            "output": 150.0,
+            "cache_read": 4.0,
+            "cache_write_5m": 50.0
+          }
+        },
+        {
+          "name": "flex · 长上下文 (>272K)",
+          "priority": 50,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 10.0,
+            "output": 37.5,
+            "cache_read": 1.0,
+            "cache_write_5m": 12.5
+          }
+        },
+        {
+          "name": "ultrafast",
+          "priority": 40,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "ultrafast"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 60.0,
+            "output": 300.0,
+            "cache_read": 6.0,
+            "cache_write_5m": 75.0
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 20.0,
+            "output": 100.0,
+            "cache_read": 2.0,
+            "cache_write_5m": 25.0
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 5.0,
+            "output": 25.0,
+            "cache_read": 0.5,
+            "cache_write_5m": 6.25
+          }
+        },
+        {
+          "name": "长上下文 (>272K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 20.0,
+            "output": 75.0,
+            "cache_read": 2.0,
+            "cache_write_5m": 25.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-6-sol",
+      "match": "(?i)^(openai/)?(gpt-6-sol)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-6-sol"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 10.0,
+            "cache_read": 0.2,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "fast/priority · 长上下文 (>272K)",
+          "priority": 50,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 8.0,
+            "output": 30.0,
+            "cache_read": 0.8,
+            "cache_write_5m": 10.0
+          }
+        },
+        {
+          "name": "flex · 长上下文 (>272K)",
+          "priority": 40,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.0,
+            "output": 7.5,
+            "cache_read": 0.2,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 20.0,
+            "cache_read": 0.4,
+            "cache_write_5m": 5.0
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 1.0,
+            "output": 5.0,
+            "cache_read": 0.1,
+            "cache_write_5m": 1.25
+          }
+        },
+        {
+          "name": "长上下文 (>272K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 15.0,
+            "cache_read": 0.4,
+            "cache_write_5m": 5.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-6.1-sol",
+      "match": "(?i)^(openai/)?(gpt-6.1-sol)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-30）",
+      "examples": [
+        "gpt-6.1-sol"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 10.0,
+            "cache_read": 0.1,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "fast/priority · 长上下文 (>272K)",
+          "priority": 50,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 8.0,
+            "output": 30.0,
+            "cache_read": 0.4,
+            "cache_write_5m": 10.0
+          }
+        },
+        {
+          "name": "flex · 长上下文 (>272K)",
+          "priority": 40,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.0,
+            "output": 7.5,
+            "cache_read": 0.1,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 20.0,
+            "cache_read": 0.2,
+            "cache_write_5m": 5.0
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 1.0,
+            "output": 5.0,
+            "cache_read": 0.05,
+            "cache_write_5m": 1.25
+          }
+        },
+        {
+          "name": "长上下文 (>272K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 15.0,
+            "cache_read": 0.2,
+            "cache_write_5m": 5.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "gpt-6-luna",
+      "match": "(?i)^(openai/)?(gpt-6-luna)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-25）",
+      "examples": [
+        "gpt-6-luna"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.1,
+            "output": 0.5,
+            "cache_read": 0.01,
+            "cache_write_5m": 0.125
+          }
+        },
+        {
+          "name": "fast/priority · 长上下文 (>272K)",
+          "priority": 50,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.4,
+            "output": 1.5,
+            "cache_read": 0.04,
+            "cache_write_5m": 0.5
+          }
+        },
+        {
+          "name": "flex · 长上下文 (>272K)",
+          "priority": 40,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.1,
+            "output": 0.375,
+            "cache_read": 0.01,
+            "cache_write_5m": 0.125
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.2,
+            "output": 1.0,
+            "cache_read": 0.02,
+            "cache_write_5m": 0.25
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.05,
+            "output": 0.25,
+            "cache_read": 0.005,
+            "cache_write_5m": 0.0625
+          }
+        },
+        {
+          "name": "长上下文 (>272K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.2,
+            "output": 0.75,
+            "cache_read": 0.02,
+            "cache_write_5m": 0.25
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-3.5-flash",
+      "match": "(?i)^(google(ai)?/)?(gemini-3.5-flash)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-14）",
+      "examples": [
+        "gemini-3.5-flash"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.5,
+            "output": 9.0,
+            "cache_read": 0.15
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.7,
+            "output": 16.2,
+            "cache_read": 0.27
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-3-flash-preview",
+      "match": "(?i)^(google(ai)?/)?(gemini-3-flash-preview)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-14）",
+      "examples": [
+        "gemini-3-flash-preview"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.5,
+            "output": 3.0,
+            "cache_read": 0.05
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.9,
+            "output": 5.4,
+            "cache_read": 0.09
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-3.1-flash-lite",
+      "match": "(?i)^(google(ai)?/)?(gemini-3.1-flash-lite)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-14）",
+      "examples": [
+        "gemini-3.1-flash-lite"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.25,
+            "output": 1.5,
+            "cache_read": 0.025
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.45,
+            "output": 2.7,
+            "cache_read": 0.045
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-3.1-flash-lite-preview",
+      "match": "(?i)^(google(ai)?/)?(gemini-3.1-flash-lite-preview)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-09）",
+      "examples": [
+        "gemini-3.1-flash-lite-preview"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.25,
+            "output": 1.5,
+            "cache_read": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-3.6-flash",
+      "match": "(?i)^(google(ai)?/)?(gemini-3.6-flash)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-14）",
+      "examples": [
+        "gemini-3.6-flash"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.75,
+            "output": 3.75,
+            "cache_read": 0.075
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 1.35,
+            "output": 6.75,
+            "cache_read": 0.135
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-3.7-flash",
+      "match": "(?i)^(google(ai)?/)?(gemini-3.7-flash)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-14）",
+      "examples": [
+        "gemini-3.7-flash"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.75,
+            "output": 3.75,
+            "cache_read": 0.075
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 1.35,
+            "output": 6.75,
+            "cache_read": 0.135
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-3.8-flash",
+      "match": "(?i)^(google(ai)?/)?(gemini-3.8-flash)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-14）",
+      "examples": [
+        "gemini-3.8-flash"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.75,
+            "output": 3.75,
+            "cache_read": 0.075
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 1.35,
+            "output": 6.75,
+            "cache_read": 0.135
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-4-argon",
+      "match": "(?i)^(google(ai)?/)?(gemini-4-argon)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-10-14）",
+      "examples": [
+        "gemini-4-argon"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 10.0,
+            "cache_read": 0.1
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 3.6,
+            "output": 18.0,
+            "cache_read": 0.18
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-3.5-flash-lite",
+      "match": "(?i)^(google(ai)?/)?(gemini-3.5-flash-lite)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-09-14）",
+      "examples": [
+        "gemini-3.5-flash-lite"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.3,
+            "output": 2.5,
+            "cache_read": 0.03
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.54,
+            "output": 4.5,
+            "cache_read": 0.05
+          }
+        }
+      ]
+    },
+    {
+      "id": "openai-gpt-5.6",
+      "match": "(?i)^(openai/)?(gpt\\-5\\.6)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（openai/）",
+      "examples": [
+        "gpt-5.6"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 4.0,
+            "output": 20.0,
+            "cache_read": 0.4,
+            "cache_write_5m": 5.0
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.0,
+            "output": 10.0,
+            "cache_read": 0.2,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 8.0,
+            "output": 40.0,
+            "cache_read": 0.8,
+            "cache_write_5m": 10.0
+          }
+        },
+        {
+          "name": "长上下文 >272K",
+          "priority": 30,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 8.0,
+            "output": 30.0,
+            "cache_read": 0.8,
+            "cache_write_5m": 10.0
+          }
+        },
+        {
+          "name": "长上下文 >272K · flex",
+          "priority": 40,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            },
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 15.0,
+            "cache_read": 0.4,
+            "cache_write_5m": 5.0
+          }
+        },
+        {
+          "name": "长上下文 >272K · priority",
+          "priority": 50,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            },
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 16.0,
+            "output": 60.0,
+            "cache_read": 1.6,
+            "cache_write_5m": 20.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "openai-gpt-5.6-cyber",
+      "match": "(?i)^(openai/)?(gpt\\-5\\.6\\-cyber)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（openai/）",
+      "examples": [
+        "gpt-5.6-cyber"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 12.5,
+            "output": 75.0,
+            "cache_read": 1.25,
+            "cache_write_5m": 15.625
+          }
+        },
+        {
+          "name": "长上下文 >272K",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 25.0,
+            "output": 112.5,
+            "cache_read": 2.5,
+            "cache_write_5m": 31.25
+          }
+        }
+      ]
+    },
+    {
+      "id": "openai-gpt-5.5-cyber",
+      "match": "(?i)^(openai/)?(gpt\\-5\\.5\\-cyber|gpt\\-5\\.5\\-cyber\\-preview)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（openai/）",
+      "examples": [
+        "gpt-5.5-cyber",
+        "gpt-5.5-cyber-preview"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 12.5,
+            "output": 75.0,
+            "cache_read": 1.25
+          }
+        }
+      ]
+    },
+    {
+      "id": "xai-grok-4.3",
+      "match": "(?i)^(xai/)?(grok\\-4\\.3|grok\\-4\\.20|grok\\-4\\.20\\-0309|grok\\-4\\.3\\-latest|grok\\-4\\.20\\-reasoning|grok\\-4\\.20\\-multi\\-agent|grok\\-4\\.20\\-non\\-reasoning|grok\\-4\\.20\\-0309\\-reasoning)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（xai/）",
+      "examples": [
+        "grok-4.3",
+        "grok-4.20",
+        "grok-4.20-0309",
+        "grok-4.3-latest",
+        "grok-4.20-reasoning",
+        "grok-4.20-multi-agent",
+        "grok-4.20-non-reasoning",
+        "grok-4.20-0309-reasoning"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.25,
+            "output": 2.5,
+            "cache_read": 0.2
+          }
+        },
+        {
+          "name": "长上下文 >200K",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 200000
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.5,
+            "output": 5.0,
+            "cache_read": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "xai-grok-4.20-multi-agent-0309",
+      "match": "(?i)^(xai/)?(grok\\-4\\.20\\-multi\\-agent\\-0309|grok\\-4\\.20\\-reasoning\\-latest|grok\\-4\\.20\\-0309\\-non\\-reasoning|grok\\-4\\.20\\-multi\\-agent\\-latest|grok\\-4\\.20\\-non\\-reasoning\\-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（xai/）",
+      "examples": [
+        "grok-4.20-multi-agent-0309",
+        "grok-4.20-reasoning-latest",
+        "grok-4.20-0309-non-reasoning",
+        "grok-4.20-multi-agent-latest",
+        "grok-4.20-non-reasoning-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.25,
+            "output": 2.5,
+            "cache_read": 0.2
+          }
+        },
+        {
+          "name": "长上下文 >200K",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 200000
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.5,
+            "output": 5.0,
+            "cache_read": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "xai-grok-4.5",
+      "match": "(?i)^(xai/)?(grok\\-4\\.5|grok\\-4\\.5\\-latest|grok\\-build\\-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（xai/）",
+      "examples": [
+        "grok-4.5",
+        "grok-4.5-latest",
+        "grok-build-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 6.0,
+            "cache_read": 0.3
+          }
+        },
+        {
+          "name": "长上下文 >200K",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 200000
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 12.0,
+            "cache_read": 0.6
+          }
+        }
+      ]
+    },
+    {
+      "id": "xai-grok-4.6",
+      "match": "(?i)^(xai/)?(grok\\-4\\.6|grok\\-4\\.7)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（xai/）",
+      "examples": [
+        "grok-4.6",
+        "grok-4.7"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 6.0,
+            "cache_read": 0.5
+          }
+        },
+        {
+          "name": "长上下文 >200K",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 200000
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 12.0,
+            "cache_read": 1.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "xai-grok-build-0.1",
+      "match": "(?i)^(xai/)?(grok\\-build\\-0\\.1|grok\\-code\\-fast|grok\\-code\\-fast\\-1|grok\\-code\\-fast\\-1\\-0825)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（xai/）",
+      "examples": [
+        "grok-build-0.1",
+        "grok-code-fast",
+        "grok-code-fast-1",
+        "grok-code-fast-1-0825"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.0,
+            "output": 2.0,
+            "cache_read": 0.2
+          }
+        },
+        {
+          "name": "长上下文 >200K",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 200000
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.0,
+            "output": 4.0,
+            "cache_read": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "moonshot-kimi-k2.7-code",
+      "match": "(?i)^(moonshot/)?(kimi\\-k2\\.7\\-code)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（moonshot/）",
+      "examples": [
+        "kimi-k2.7-code"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.95,
+            "output": 4.0,
+            "cache_read": 0.19
+          }
+        }
+      ]
+    },
+    {
+      "id": "moonshot-kimi-k2.5",
+      "match": "(?i)^(moonshot/)?(kimi\\-k2\\.5)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（moonshot/）",
+      "examples": [
+        "kimi-k2.5"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.6,
+            "output": 3.0,
+            "cache_read": 0.1
+          }
+        }
+      ]
+    },
+    {
+      "id": "moonshot-kimi-k2.6",
+      "match": "(?i)^(moonshot/)?(kimi\\-k2\\.6)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（moonshot/）",
+      "examples": [
+        "kimi-k2.6"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.95,
+            "output": 4.0,
+            "cache_read": 0.16
+          }
+        }
+      ]
+    },
+    {
+      "id": "moonshot-kimi-k3",
+      "match": "(?i)^(moonshot/)?(kimi\\-k3)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（moonshot/）",
+      "examples": [
+        "kimi-k3"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.3
+          }
+        }
+      ]
+    },
+    {
+      "id": "minimax-minimax-m2",
+      "match": "(?i)^(minimax/)?(MiniMax\\-M2|MiniMax\\-M2\\.1|MiniMax\\-M2\\.5)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（minimax/）",
+      "examples": [
+        "MiniMax-M2",
+        "MiniMax-M2.1",
+        "MiniMax-M2.5"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.3,
+            "output": 1.2,
+            "cache_read": 0.03,
+            "cache_write_5m": 0.375
+          }
+        }
+      ]
+    },
+    {
+      "id": "minimax-minimax-m2.1-lightning",
+      "match": "(?i)^(minimax/)?(MiniMax\\-M2\\.1\\-lightning|MiniMax\\-M2\\.5\\-lightning)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（minimax/）",
+      "examples": [
+        "MiniMax-M2.1-lightning",
+        "MiniMax-M2.5-lightning"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.3,
+            "output": 2.4,
+            "cache_read": 0.03,
+            "cache_write_5m": 0.375
+          }
+        }
+      ]
+    },
+    {
+      "id": "minimax-minimax-m3",
+      "match": "(?i)^(minimax/)?(MiniMax\\-M3)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（minimax/）",
+      "examples": [
+        "MiniMax-M3"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.3,
+            "output": 1.2,
+            "cache_read": 0.06
+          }
+        },
+        {
+          "name": "长上下文 >512K",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 512000
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.6,
+            "output": 2.4,
+            "cache_read": 0.12
+          }
+        }
+      ]
+    },
+    {
+      "id": "zai-glm-5",
+      "match": "(?i)^(zai/)?(glm\\-5)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（zai/）",
+      "examples": [
+        "glm-5"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.0,
+            "output": 3.2,
+            "cache_read": 0.2,
+            "cache_write_5m": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "zai-glm-5.1",
+      "match": "(?i)^(zai/)?(glm\\-5\\.1|glm\\-5\\.2|glm\\-5\\.3)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（zai/）",
+      "examples": [
+        "glm-5.1",
+        "glm-5.2",
+        "glm-5.3"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.4,
+            "output": 4.4,
+            "cache_read": 0.26,
+            "cache_write_5m": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "zai-glm-5.3-flash",
+      "match": "(?i)^(zai/)?(glm\\-5\\.3\\-flash)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（zai/）",
+      "examples": [
+        "glm-5.3-flash"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.15,
+            "output": 0.5,
+            "cache_read": 0.03,
+            "cache_write_5m": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "zai-glm-5-code",
+      "match": "(?i)^(zai/)?(glm\\-5\\-code)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（zai/）",
+      "examples": [
+        "glm-5-code"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.2,
+            "output": 5.0,
+            "cache_read": 0.3,
+            "cache_write_5m": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "zai-glm-4.6",
+      "match": "(?i)^(zai/)?(glm\\-4\\.6|glm\\-4\\.7)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（zai/）",
+      "examples": [
+        "glm-4.6",
+        "glm-4.7"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.6,
+            "output": 2.2,
+            "cache_read": 0.11,
+            "cache_write_5m": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "zai-glm-4.7-flash",
+      "match": "(?i)^(zai/)?(glm\\-4\\.7\\-flash)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（zai/）",
+      "examples": [
+        "glm-4.7-flash"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0,
+            "output": 0,
+            "cache_read": 0,
+            "cache_write_5m": 0
+          },
+          "zero_reason": "litellm 标为免费"
+        }
+      ]
+    },
+    {
+      "id": "zai-glm-4.5",
+      "match": "(?i)^(zai/)?(glm\\-4\\.5)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（zai/）",
+      "examples": [
+        "glm-4.5"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.6,
+            "output": 2.2
+          }
+        }
+      ]
+    },
+    {
+      "id": "zai-glm-4.5v",
+      "match": "(?i)^(zai/)?(glm\\-4\\.5v)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（zai/）",
+      "examples": [
+        "glm-4.5v"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.6,
+            "output": 1.8
+          }
+        }
+      ]
+    },
+    {
+      "id": "zai-glm-4.5-x",
+      "match": "(?i)^(zai/)?(glm\\-4\\.5\\-x)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（zai/）",
+      "examples": [
+        "glm-4.5-x"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.2,
+            "output": 8.9
+          }
+        }
+      ]
+    },
+    {
+      "id": "zai-glm-4.5-air",
+      "match": "(?i)^(zai/)?(glm\\-4\\.5\\-air)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（zai/）",
+      "examples": [
+        "glm-4.5-air"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.2,
+            "output": 1.1
+          }
+        }
+      ]
+    },
+    {
+      "id": "zai-glm-4.5-airx",
+      "match": "(?i)^(zai/)?(glm\\-4\\.5\\-airx)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（zai/）",
+      "examples": [
+        "glm-4.5-airx"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.1,
+            "output": 4.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "zai-glm-4.5-flash",
+      "match": "(?i)^(zai/)?(glm\\-4\\.5\\-flash)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（zai/）",
+      "examples": [
+        "glm-4.5-flash"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0,
+            "output": 0
+          },
+          "zero_reason": "litellm 标为免费"
+        }
+      ]
+    },
+    {
+      "id": "mistral-codestral-2508",
+      "match": "(?i)^(mistral/)?(codestral\\-2508|codestral\\-latest|mistral\\-code\\-latest|mistral\\-code\\-fim\\-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（mistral/）",
+      "examples": [
+        "codestral-2508",
+        "codestral-latest",
+        "mistral-code-latest",
+        "mistral-code-fim-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.3,
+            "output": 0.9,
+            "cache_read": 0.03
+          }
+        }
+      ]
+    },
+    {
+      "id": "mistral-mistral-tiny",
+      "match": "(?i)^(mistral/)?(mistral\\-tiny|codestral\\-mamba\\-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（mistral/）",
+      "examples": [
+        "mistral-tiny",
+        "codestral-mamba-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.25,
+            "output": 0.25,
+            "cache_read": 0.025
+          }
+        }
+      ]
+    },
+    {
+      "id": "mistral-mistral-small",
+      "match": "(?i)^(mistral/)?(mistral\\-small|devstral\\-small\\-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（mistral/）",
+      "examples": [
+        "mistral-small",
+        "devstral-small-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.1,
+            "output": 0.3,
+            "cache_read": 0.01
+          }
+        }
+      ]
+    },
+    {
+      "id": "mistral-devstral-latest",
+      "match": "(?i)^(mistral/)?(devstral\\-latest|devstral\\-medium\\-latest|mistral\\-code\\-agent\\-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（mistral/）",
+      "examples": [
+        "devstral-latest",
+        "devstral-medium-latest",
+        "mistral-code-agent-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.4,
+            "output": 2.0,
+            "cache_read": 0.04
+          }
+        }
+      ]
+    },
+    {
+      "id": "mistral-ministral-14b-2512",
+      "match": "(?i)^(mistral/)?(ministral\\-14b\\-2512|ministral\\-14b\\-latest|ministral\\-3\\-14b\\-2512)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（mistral/）",
+      "examples": [
+        "ministral-14b-2512",
+        "ministral-14b-latest",
+        "ministral-3-14b-2512"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.2,
+            "output": 0.2,
+            "cache_read": 0.02
+          }
+        }
+      ]
+    },
+    {
+      "id": "mistral-ministral-3b-2512",
+      "match": "(?i)^(mistral/)?(ministral\\-3b\\-2512|ministral\\-3\\-3b\\-2512|ministral\\-3b\\-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（mistral/）",
+      "examples": [
+        "ministral-3b-2512",
+        "ministral-3-3b-2512",
+        "ministral-3b-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.1,
+            "output": 0.1,
+            "cache_read": 0.01
+          }
+        }
+      ]
+    },
+    {
+      "id": "mistral-mistral-medium",
+      "match": "(?i)^(mistral/)?(mistral\\-medium|mistral\\-medium\\-3|mistral\\-medium\\-3\\-5|mistral\\-medium\\-3\\.5|mistral\\-medium\\-2604|mistral\\-medium\\-latest|magistral\\-medium\\-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（mistral/）",
+      "examples": [
+        "mistral-medium",
+        "mistral-medium-3",
+        "mistral-medium-3-5",
+        "mistral-medium-3.5",
+        "mistral-medium-2604",
+        "mistral-medium-latest",
+        "magistral-medium-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.5,
+            "output": 7.5,
+            "cache_read": 0.15
+          }
+        }
+      ]
+    },
+    {
+      "id": "mistral-mistral-small-2603",
+      "match": "(?i)^(mistral/)?(mistral\\-small\\-2603|mistral\\-small\\-latest|magistral\\-small\\-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（mistral/）",
+      "examples": [
+        "mistral-small-2603",
+        "mistral-small-latest",
+        "magistral-small-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.15,
+            "output": 0.6,
+            "cache_read": 0.015
+          }
+        }
+      ]
+    },
+    {
+      "id": "mistral-mistral-large-4",
+      "match": "(?i)^(mistral/)?(mistral\\-large\\-4|mistral\\-large\\-4\\-0)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（mistral/）",
+      "examples": [
+        "mistral-large-4",
+        "mistral-large-4-0"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.68,
+            "output": 2.09,
+            "cache_read": 0.068
+          }
+        }
+      ]
+    },
+    {
+      "id": "mistral-mistral-large-3",
+      "match": "(?i)^(mistral/)?(mistral\\-large\\-3|mistral\\-large\\-2512|mistral\\-large\\-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（mistral/）",
+      "examples": [
+        "mistral-large-3",
+        "mistral-large-2512",
+        "mistral-large-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.5,
+            "output": 1.5,
+            "cache_read": 0.05
+          }
+        }
+      ]
+    },
+    {
+      "id": "mistral-ministral-8b-2512",
+      "match": "(?i)^(mistral/)?(ministral\\-8b\\-2512|ministral\\-3\\-8b\\-2512|ministral\\-8b\\-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（mistral/）",
+      "examples": [
+        "ministral-8b-2512",
+        "ministral-3-8b-2512",
+        "ministral-8b-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.15,
+            "output": 0.15,
+            "cache_read": 0.015
+          }
+        }
+      ]
+    },
+    {
+      "id": "mistral-open-mistral-nemo",
+      "match": "(?i)^(mistral/)?(open\\-mistral\\-nemo)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（mistral/）",
+      "examples": [
+        "open-mistral-nemo"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.3,
+            "output": 0.3,
+            "cache_read": 0.03
+          }
+        }
+      ]
+    },
+    {
+      "id": "mistral-pixtral-large-latest",
+      "match": "(?i)^(mistral/)?(pixtral\\-large\\-latest)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（mistral/）",
+      "examples": [
+        "pixtral-large-latest"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 6.0,
+            "cache_read": 0.2
+          }
+        }
+      ]
+    }
+  ]
+}
