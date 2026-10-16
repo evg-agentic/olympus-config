@@ -15,6 +15,10 @@ earlier entry: the earlier source is the override.
 
     python3 scripts/build_pricing.py            # fetch upstream, write, validate
     python3 scripts/build_pricing.py --langfuse a.json --litellm b.json
+    python3 scripts/build_pricing.py --summary /tmp/pr-body.md
+
+The output is rewritten only when the models change; upstream commits that touch
+nothing we carry leave it as is.
 """
 
 from __future__ import annotations
@@ -23,6 +27,8 @@ import argparse
 import json
 import re
 import sys
+import os
+import urllib.parse
 import urllib.request
 from collections.abc import Callable
 from dataclasses import dataclass
@@ -31,14 +37,12 @@ from pathlib import Path
 from typing import Any
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
+from pricing_diff import summarize  # noqa: E402
 from validate_pricing import MAX_PATTERN_LENGTH, validate  # noqa: E402
 
 ROOT = Path(__file__).resolve().parent.parent
 CURATED = ROOT / "pricing" / "curated.json"
 OUTPUT = ROOT / "pricing" / "model-prices.json"
-
-LANGFUSE_URL = "https://raw.githubusercontent.com/langfuse/langfuse/main/worker/src/constants/default-model-prices.json"
-LITELLM_URL = "https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json"
 
 #: Retired or non-text models langfuse still carries.
 LANGFUSE_DROP = re.compile(
@@ -308,11 +312,45 @@ def litellm_entry(vendor: str, spec: LitellmVendor, names: list[str], tiers: lis
 # ---- assembly ---------------------------------------------------------------------
 
 
-def load(path: str | None, url: str) -> Any:
-    if path:
-        return json.loads(Path(path).read_text(encoding="utf-8"))
-    with urllib.request.urlopen(url, timeout=60) as response:  # noqa: S310 — fixed https URLs
-        return json.loads(response.read())
+@dataclass(frozen=True)
+class Upstream:
+    """One upstream price file, read at a pinned commit so a build is reproducible
+    and the output records exactly which revision each price came from."""
+
+    name: str
+    repo: str
+    path: str
+
+    def raw_url(self, ref: str) -> str:
+        return f"https://raw.githubusercontent.com/{self.repo}/{ref}/{self.path}"
+
+
+LANGFUSE = Upstream("langfuse", "langfuse/langfuse", "worker/src/constants/default-model-prices.json")
+LITELLM = Upstream("litellm", "BerriAI/litellm", "model_prices_and_context_window.json")
+
+
+def http_get(url: str) -> bytes:
+    request = urllib.request.Request(url, headers={"User-Agent": "olympus-config-build"})
+    token = os.environ.get("GITHUB_TOKEN") or os.environ.get("GH_TOKEN")
+    if token and url.startswith("https://api.github.com/"):
+        request.add_header("Authorization", f"Bearer {token}")
+    with urllib.request.urlopen(request, timeout=60) as response:  # noqa: S310 — fixed https hosts
+        return response.read()
+
+
+def latest_commit(upstream: Upstream) -> str:
+    """The newest commit that touched the file — what "latest" pins to."""
+    query = urllib.parse.urlencode({"path": upstream.path, "per_page": 1})
+    commits = json.loads(http_get(f"https://api.github.com/repos/{upstream.repo}/commits?{query}"))
+    return str(commits[0]["sha"])
+
+
+def load(upstream: Upstream, local: str | None) -> tuple[Any, str]:
+    """(parsed file, commit it was read at). A local copy records ``local``."""
+    if local:
+        return json.loads(Path(local).read_text(encoding="utf-8")), "local"
+    commit = latest_commit(upstream)
+    return json.loads(http_get(upstream.raw_url(commit))), commit
 
 
 def append_unless_overridden(models: list[dict[str, Any]], entry: dict[str, Any], report: list[str]) -> None:
@@ -330,12 +368,9 @@ def append_unless_overridden(models: list[dict[str, Any]], entry: dict[str, Any]
     models.append(entry)
 
 
-def build(langfuse: list[dict[str, Any]], litellm: dict[str, Any]) -> tuple[dict[str, Any], list[str]]:
+def build_models(langfuse: list[dict[str, Any]], litellm: dict[str, Any], today: str) -> tuple[list[dict[str, Any]], list[str]]:
     report: list[str] = []
-    today = date.today().isoformat()
-    models: list[dict[str, Any]] = []
-    for entry in json.loads(CURATED.read_text(encoding="utf-8"))["models"]:
-        models.append(entry)
+    models: list[dict[str, Any]] = list(json.loads(CURATED.read_text(encoding="utf-8"))["models"])
     for entry in langfuse:
         if LANGFUSE_DROP.match(entry["modelName"]):
             continue
@@ -343,6 +378,7 @@ def build(langfuse: list[dict[str, Any]], litellm: dict[str, Any]) -> tuple[dict
             append_unless_overridden(models, convert_langfuse(entry), report)
         except BuildError as exc:
             report.append(f"langfuse skipped {exc}")
+
     def priced_by(name: str) -> str | None:
         return next((m["id"] for m in models if re.search(m["match"], name)), None)
 
@@ -350,30 +386,58 @@ def build(langfuse: list[dict[str, Any]], litellm: dict[str, Any]) -> tuple[dict
     report.extend(f"litellm skipped {s}" for s in skipped)
     for entry in converted:
         append_unless_overridden(models, entry, report)
-    catalog = {
+    return models, report
+
+
+def catalog_of(models: list[dict[str, Any]], commits: dict[str, str], today: str) -> dict[str, Any]:
+    return {
         "schema_version": 1,
         "updated_at": today,
         "sources": [
-            {"name": "curated", "url": "pricing/curated.json"},
-            {"name": "langfuse", "url": LANGFUSE_URL},
-            {"name": "litellm", "url": LITELLM_URL},
+            {"name": "curated", "path": "pricing/curated.json"},
+            *(
+                {"name": u.name, "repo": u.repo, "path": u.path, "commit": commits[u.name]}
+                for u in (LANGFUSE, LITELLM)
+            ),
         ],
         "models": models,
     }
-    return catalog, report
+
+
+def same_content(previous: dict[str, Any], current: dict[str, Any]) -> bool:
+    """Same models from the same sources. The upstream commits and the date are
+    left out: they move whether or not any price we carry did."""
+
+    def sources(catalog: dict[str, Any]) -> list[dict[str, Any]]:
+        return [{k: v for k, v in s.items() if k != "commit"} for s in catalog.get("sources", [])]
+
+    return previous.get("models") == current["models"] and sources(previous) == sources(current)
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--langfuse", help="local copy of langfuse default-model-prices.json")
     parser.add_argument("--litellm", help="local copy of litellm model_prices_and_context_window.json")
+    parser.add_argument("--summary", help="write a Markdown change summary here (for the sync PR)")
     args = parser.parse_args()
-    catalog, report = build(load(args.langfuse, LANGFUSE_URL), load(args.litellm, LITELLM_URL))
+
+    today = date.today().isoformat()
+    langfuse, langfuse_commit = load(LANGFUSE, args.langfuse)
+    litellm, litellm_commit = load(LITELLM, args.litellm)
+    models, report = build_models(langfuse, litellm, today)
+    catalog = catalog_of(models, {"langfuse": langfuse_commit, "litellm": litellm_commit}, today)
     validate(catalog)
-    OUTPUT.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+    previous = json.loads(OUTPUT.read_text(encoding="utf-8")) if OUTPUT.exists() else None
     for line in report:
         print(line)
-    print(f"wrote {OUTPUT.relative_to(ROOT)}: {len(catalog['models'])} entries")
+    if previous is not None and same_content(previous, catalog):
+        print(f"{OUTPUT.relative_to(ROOT)} unchanged: {len(models)} entries")
+        return 0
+    OUTPUT.write_text(json.dumps(catalog, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    if args.summary:
+        Path(args.summary).write_text(summarize(previous, catalog, report), encoding="utf-8")
+    print(f"wrote {OUTPUT.relative_to(ROOT)}: {len(models)} entries")
     return 0
 
 

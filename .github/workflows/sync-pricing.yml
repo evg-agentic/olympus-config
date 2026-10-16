@@ -1,0 +1,61 @@
+# 每天拉 langfuse / litellm 的最新价目，和 pricing/curated.json 合并后重新生成
+# pricing/model-prices.json。有变化就开（或更新）一个 PR，人工核对后合并；
+# 价格没变化（只是上游有不相干的提交）就什么都不做。
+name: 同步模型价目
+
+on:
+  schedule:
+    # UTC 06:30（北京 14:30）。langfuse 的价目审计在 UTC 02:17 跑，留出合并时间。
+    - cron: "30 6 * * *"
+  workflow_dispatch:
+  # 手工条目或构建脚本改了，立刻重新生成，不等第二天。
+  push:
+    branches: [main]
+    paths:
+      - pricing/curated.json
+      - scripts/**
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: sync-pricing
+  cancel-in-progress: false
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: 单元测试
+        run: python3 -m unittest discover -s tests
+
+      - name: 生成价目
+        id: build
+        env:
+          # 查上游文件的最新提交要调 GitHub API，带上 token 免得被限流。
+          GITHUB_TOKEN: ${{ github.token }}
+        run: |
+          python3 scripts/build_pricing.py --summary "$RUNNER_TEMP/pr-body.md"
+          if git diff --quiet -- pricing/model-prices.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: 开 PR
+        if: steps.build.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          branch: bot/sync-model-prices
+          delete-branch: true
+          add-paths: pricing/model-prices.json
+          commit-message: "chore: sync model prices from upstream"
+          title: "chore: 同步模型价目"
+          body-path: ${{ runner.temp }}/pr-body.md

@@ -4,15 +4,19 @@
   "sources": [
     {
       "name": "curated",
-      "url": "pricing/curated.json"
+      "path": "pricing/curated.json"
     },
     {
       "name": "langfuse",
-      "url": "https://raw.githubusercontent.com/langfuse/langfuse/main/worker/src/constants/default-model-prices.json"
+      "repo": "langfuse/langfuse",
+      "path": "worker/src/constants/default-model-prices.json",
+      "commit": "f8a29ac37485adb14af38288f02ec94bb387d3bf"
     },
     {
       "name": "litellm",
-      "url": "https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json"
+      "repo": "BerriAI/litellm",
+      "path": "model_prices_and_context_window.json",
+      "commit": "e74e4e569331c1d99757ae6118685d8826c6f7c6"
     }
   ],
   "models": [

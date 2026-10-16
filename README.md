@@ -4,10 +4,12 @@ Olympus 的平台级公共配置。目前只有一份：**模型价目表**。
 
 | 文件 | 说明 |
 |---|---|
-| `pricing/model-prices.json` | 生成的价目表。Olympus 平台管理员把它的 raw 链接配成"价格源"，平台每天拉取一次 |
-| `pricing/curated.json` | 手工维护的条目：国内厂商的人民币价、分时段价、非 token 计价项 |
-| `scripts/build_pricing.py` | 合并上游价目表和手工条目，生成 `model-prices.json` |
+| `pricing/model-prices.json` | **生成的**价目表，不要手改。Olympus 平台管理员把它的 raw 链接配成"价格源"，平台每天拉取一次 |
+| `pricing/curated.json` | **我们自己维护的条目**：上游没有或口径不对的模型（DeepSeek 分时价、百炼人民币价）以及非 token 计价项 |
+| `scripts/build_pricing.py` | 拉取上游价目、和手工条目合并，生成 `model-prices.json` |
 | `scripts/validate_pricing.py` | 校验价目表。Olympus 同步时用同样的规则，一条不过整份拒收 |
+| `scripts/pricing_diff.py` | 生成同步 PR 的变更摘要 |
+| `.github/workflows/sync-pricing.yml` | 每日同步任务 |
 
 价格源链接：
 
@@ -17,17 +19,28 @@ https://raw.githubusercontent.com/evg-agentic/olympus-config/main/pricing/model-
 
 ## 更新价目
 
+### 自动同步（日常）
+
+GitHub Actions 每天 UTC 06:30（北京 14:30）运行 `sync-pricing.yml`：
+
+1. 拉取 langfuse、litellm 价目文件的最新版本，并记下各自的提交号；
+2. 和 `pricing/curated.json` 合并，跑单元测试和校验；
+3. 如果生成的价目有变化，就开一个 PR（分支 `bot/sync-model-prices`；已有未合并的 PR 就更新它）。PR 正文列出新增、删除和改价的条目，以及上游版本的对比链接。
+
+上游有提交但我们收录的价格没变时不会开 PR。合并 PR 后，Olympus 在下一次同步时拉到新价目，只影响之后的调用。
+
+也可以在 Actions 页面手动触发同步。
+
+### 改手工条目
+
+直接改 `pricing/curated.json` 并推到 `main`。推送会立刻触发同步任务，重新生成价目并开 PR。想在本地先看效果，可以这样跑：
+
 ```bash
-python3 scripts/build_pricing.py
+GH_TOKEN=$(gh auth token) python3 scripts/build_pricing.py --summary /tmp/pr-body.md
+python3 -m unittest discover -s tests
 ```
 
-脚本会拉取上游最新的价目表、合并、校验，然后覆盖 `pricing/model-prices.json`，并打印被丢弃或跳过的条目。只用 Python 标准库，不需要安装依赖。
-
-改了 `curated.json` 之后也要重新跑一遍构建。推送前确认校验通过：
-
-```bash
-python3 scripts/validate_pricing.py pricing/model-prices.json
-```
+只用 Python 标准库，不需要安装依赖。不带 token 也能跑，但 GitHub API 匿名访问容易被限流。
 
 ## 价格口径
 
@@ -95,3 +108,12 @@ python3 scripts/validate_pricing.py pricing/model-prices.json
 - **千问只有首档价：** 只收录了单次输入 ≤256K 的价格，更高档位的人民币价还没核对。
 - **已退役的名字不计价：** `deepseek-chat`、`deepseek-reasoner`、`gpt-5.x-codex` 这些名字都没收录，用到时会显示为“未计价”。
 - **音频、图像按模态单独计价的部分**（如 Gemini 的音频输入、OpenAI 的 realtime）不在本格式范围内。
+
+## 致谢与许可
+
+价目数据有很大一部分来自下面两个开源项目，感谢它们的维护者长期跟进各家厂商的价格：
+
+- [langfuse/langfuse](https://github.com/langfuse/langfuse)：`worker/src/constants/default-model-prices.json`，MIT 许可，Copyright (c) 2023-2026 ClickHouse, Inc.
+- [BerriAI/litellm](https://github.com/BerriAI/litellm)：`model_prices_and_context_window.json`，MIT 许可，Copyright (c) 2023 Berri AI
+
+我们按本仓库的格式转换并选用了其中的条目，原版权和许可声明见 [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md)。

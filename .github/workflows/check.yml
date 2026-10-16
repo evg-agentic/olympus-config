@@ -1,0 +1,28 @@
+# 人工提的 PR 和推到 main 的提交：跑单元测试、校验价目表。
+# 同步任务用 GITHUB_TOKEN 开的 PR 不会触发这里（GitHub 的限制），
+# 那些 PR 在同步任务里已经跑过同样的检查。
+name: 校验
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: 单元测试
+        run: python3 -m unittest discover -s tests
+
+      - name: 校验价目表
+        run: python3 scripts/validate_pricing.py pricing/model-prices.json
