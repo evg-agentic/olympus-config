@@ -17,7 +17,8 @@
     },
     "type": {
       "enum": ["app", "folder"],
-      "description": "这个文件夹是什么。不写时：入口文件存在就是 app，否则是 folder。folder 表示即使有 index.html 也不当成应用。"
+      "default": "folder",
+      "description": "这个文件夹是什么，默认 folder。只有写明 app 才是应用，有 index.html 也不会自动当成应用。"
     },
     "metadata": {
       "type": "object",

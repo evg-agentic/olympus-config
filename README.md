@@ -106,7 +106,7 @@ python3 -m unittest discover -s tests
 
 ## .olympus.json
 
-Artifacts 里文件夹的描述文件，可选，默认没有。没有时按默认规则：有 `index.html` 的文件夹是应用，否则是普通文件夹。
+Artifacts 里文件夹的描述文件，可选，默认没有。没有这个文件，或者没写 `type`，就是普通文件夹；只有写明 `"type": "app"` 才是应用。
 
 ```json
 {
@@ -123,7 +123,7 @@ Artifacts 里文件夹的描述文件，可选，默认没有。没有时按默�
 | 字段 | 说明 |
 |---|---|
 | `version` | 必填，目前只能是 `1` |
-| `type` | `app` 或 `folder`；不写时入口文件存在就是 `app`。`folder` 表示有 `index.html` 也不当成应用 |
+| `type` | `app` 或 `folder`，默认 `folder`。有 `index.html` 也不会自动当成应用 |
 | `metadata.folder.icon` | 文件夹图标，对所有文件夹生效 |
 | `metadata.app.entry` | 入口页面，文件夹内的相对路径，默认 `index.html` |
 | `metadata.app.icon` | 应用图标，不写时用 `metadata.folder.icon` |
