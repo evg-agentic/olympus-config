@@ -1,6 +1,9 @@
 # olympus-config
 
-Olympus 的平台级公共配置。目前包含**模型价目表**：Olympus 按它给每次模型调用和工具调用计价。
+Olympus 的平台级公共配置。目前包含：
+
+- **模型价目表**：Olympus 按它给每次模型调用和工具调用计价。
+- **文件夹描述文件的 JSON Schema**：见下文 [`.olympus.json`](#olympusjson)。
 
 价格源链接：
 
@@ -14,6 +17,7 @@ https://raw.githubusercontent.com/evg-agentic/olympus-config/main/pricing/model-
 |---|---|
 | `pricing/model-prices.json` | 价目表，由构建脚本生成，不要手改 |
 | `pricing/curated.json` | 自行维护的条目：上游价目表没有收录或口径不同的模型，以及按次、按张、按秒计价的项目 |
+| `schemas/olympus-folder.v1.json` | `.olympus.json` 的 JSON Schema |
 | `scripts/build_pricing.py` | 拉取上游价目，和 `curated.json` 合并，生成价目表 |
 | `scripts/validate_pricing.py` | 校验价目表，规则和 Olympus 同步价格源时一致 |
 | `scripts/pricing_diff.py` | 生成价目变更摘要 |
@@ -99,6 +103,35 @@ python3 -m unittest discover -s tests
 ```
 
 构建脚本会调用 GitHub API 查询上游提交，设置 `GH_TOKEN` 或 `GITHUB_TOKEN` 可避免匿名访问限流。
+
+## .olympus.json
+
+Artifacts 里文件夹的描述文件，可选，默认没有。没有时按默认规则：有 `index.html` 的文件夹是应用，否则是普通文件夹。
+
+```json
+{
+  "$schema": "https://raw.githubusercontent.com/evg-agentic/olympus-config/main/schemas/olympus-folder.v1.json",
+  "version": 1,
+  "type": "app",
+  "metadata": {
+    "folder": { "icon": "folder-kanban" },
+    "app": { "entry": "dist/index.html", "icon": "chart-line", "description": "每周一自动更新的销售看板" }
+  }
+}
+```
+
+| 字段 | 说明 |
+|---|---|
+| `version` | 必填，目前只能是 `1` |
+| `type` | `app` 或 `folder`；不写时入口文件存在就是 `app`。`folder` 表示有 `index.html` 也不当成应用 |
+| `metadata.folder.icon` | 文件夹图标，对所有文件夹生效 |
+| `metadata.app.entry` | 入口页面，文件夹内的相对路径，默认 `index.html` |
+| `metadata.app.icon` | 应用图标，不写时用 `metadata.folder.icon` |
+| `metadata.app.description` | 应用简介，最多 500 字 |
+
+图标有三种写法：[Lucide](https://lucide.dev/icons) 图标名（如 `chart-line`）、一个 emoji、`./` 开头的文件夹内图片（png / svg / webp，不超过 256 KB）。
+
+Olympus 读取时比 Schema 宽松：不认识的字段忽略；某一段写错只让这一段退回默认，不影响其他段。
 
 ## 致谢与许可
 

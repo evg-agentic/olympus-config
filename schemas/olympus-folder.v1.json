@@ -1,0 +1,71 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/evg-agentic/olympus-config/main/schemas/olympus-folder.v1.json",
+  "title": ".olympus.json",
+  "description": "Olympus 文件夹描述文件（可选）。放在文件夹里，说明这个文件夹是什么、怎么显示。",
+  "type": "object",
+  "required": ["version"],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "编辑器补全用，Olympus 不读取。"
+    },
+    "version": {
+      "const": 1,
+      "description": "格式版本，目前只能是 1。"
+    },
+    "type": {
+      "enum": ["app", "folder"],
+      "description": "这个文件夹是什么。不写时：入口文件存在就是 app，否则是 folder。folder 表示即使有 index.html 也不当成应用。"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "按类型分段的属性。某一段写错只影响这一段。",
+      "additionalProperties": false,
+      "properties": {
+        "folder": {
+          "type": "object",
+          "description": "文件夹自身的属性，对所有文件夹生效（应用也是文件夹）。",
+          "additionalProperties": false,
+          "properties": {
+            "icon": { "$ref": "#/$defs/icon" }
+          }
+        },
+        "app": {
+          "type": "object",
+          "description": "作为应用时的属性，仅当 type 是 app 时读取。",
+          "additionalProperties": false,
+          "properties": {
+            "entry": {
+              "type": "string",
+              "description": "入口页面，相对这个文件夹的路径，默认 index.html。可以在子文件夹里，如 dist/index.html。",
+              "maxLength": 512,
+              "pattern": "^(\\./)?(?!/)(?!.*(^|/)\\.{1,2}(/|$))(?!.*//)[^\\\\\\u0000-\\u001f]*\\.[hH][tT][mM][lL]?$",
+              "default": "index.html",
+              "examples": ["index.html", "dist/index.html"]
+            },
+            "icon": {
+              "$ref": "#/$defs/icon",
+              "description": "应用的图标，写法同 metadata.folder.icon；不写时用 metadata.folder.icon。"
+            },
+            "description": {
+              "type": "string",
+              "description": "应用简介，显示在卡片和信息面板上。",
+              "maxLength": 500
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "icon": {
+      "type": "string",
+      "description": "三种写法之一：Lucide 图标名（如 chart-line，见 https://lucide.dev/icons）；一个 emoji；\"./\" 开头的文件夹内图片路径（png / svg / webp，不超过 256 KB）。写错时用默认图标。",
+      "minLength": 1,
+      "maxLength": 512,
+      "examples": ["chart-line", "📊", "./icon.svg"]
+    }
+  }
+}
