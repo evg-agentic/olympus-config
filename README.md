@@ -17,7 +17,7 @@ https://raw.githubusercontent.com/evg-agentic/olympus-config/main/pricing/model-
 |---|---|
 | `pricing/model-prices.json` | 价目表，由构建脚本生成，不要手改 |
 | `pricing/curated.json` | 自行维护的条目：上游价目表没有收录或口径不同的模型，以及按次、按张、按秒计价的项目 |
-| `schemas/olympus-folder.v1.json` | `.olympus.json` 的 JSON Schema |
+| `schemas/olympus-artifact.v1.json` | Artifact 清单 `.olympus.json` 的 JSON Schema |
 | `scripts/build_pricing.py` | 拉取上游价目，和 `curated.json` 合并，生成价目表 |
 | `scripts/validate_pricing.py` | 校验价目表，规则和 Olympus 同步价格源时一致 |
 | `scripts/pricing_diff.py` | 生成价目变更摘要 |
@@ -104,17 +104,19 @@ python3 -m unittest discover -s tests
 
 构建脚本会调用 GitHub API 查询上游提交，设置 `GH_TOKEN` 或 `GITHUB_TOKEN` 可避免匿名访问限流。
 
-## .olympus.json
+## .olympus.json（Artifact 清单）
 
-Artifacts 里文件夹的描述文件，可选，默认没有。没有这个文件，或者没写 `type`，就是普通文件夹；只有写明 `"type": "app"` 才是应用。
+放在一个文件夹里，这个文件夹就成为一个 artifact：在 Artifacts 里是一个 id，整体上传、整体打开，不能点进去当文件夹逛。
+`type` 决定它是什么、怎么显示，各类型的属性放在 `metadata.<type>` 下。目前只有 `app`（应用：自带页面，从入口打开）；
+以后由平台渲染的类型（如在线表格、文档）各加一个 `type` 值和自己的一段 `metadata`。
+普通文件夹只用来归类，不放这个文件。有 `index.html` 而没有清单的文件夹不是应用。
 
 ```json
 {
-  "$schema": "https://raw.githubusercontent.com/evg-agentic/olympus-config/main/schemas/olympus-folder.v1.json",
+  "$schema": "https://raw.githubusercontent.com/evg-agentic/olympus-config/main/schemas/olympus-artifact.v1.json",
   "version": 1,
   "type": "app",
   "metadata": {
-    "folder": { "icon": "folder-kanban" },
     "app": { "entry": "dist/index.html", "icon": "chart-line", "description": "每周一自动更新的销售看板" }
   }
 }
@@ -123,15 +125,14 @@ Artifacts 里文件夹的描述文件，可选，默认没有。没有这个文�
 | 字段 | 说明 |
 |---|---|
 | `version` | 必填，目前只能是 `1` |
-| `type` | `app` 或 `folder`，默认 `folder`。有 `index.html` 也不会自动当成应用 |
-| `metadata.folder.icon` | 文件夹图标，对所有文件夹生效 |
-| `metadata.app.entry` | 入口页面，文件夹内的相对路径，默认 `index.html` |
-| `metadata.app.icon` | 应用图标，不写时用 `metadata.folder.icon` |
-| `metadata.app.description` | 应用简介，最多 500 字 |
+| `type` | 必填，artifact 的类型，目前只有 `app` |
+| `metadata.app.entry` | 入口页面，应用内的相对路径，默认 `index.html`；上传时这个文件必须在 |
+| `metadata.app.icon` | 应用图标，不写时按类型显示默认图标 |
+| `metadata.app.description` | 应用简介，显示在卡片和信息面板上，最多 500 字 |
 
-图标有三种写法：[Lucide](https://lucide.dev/icons) 图标名（如 `chart-line`）、一个 emoji、`./` 开头的文件夹内图片（png / svg / webp，不超过 256 KB）。
+图标有三种写法：[Lucide](https://lucide.dev/icons) 图标名（如 `chart-line`）、一个 emoji、`./` 开头的应用内图片（png / svg / webp，不超过 256 KB）。
 
-Olympus 读取时比 Schema 宽松：不认识的字段忽略；某一段写错只让这一段退回默认，不影响其他段。
+Olympus 显示应用时比 Schema 宽松：不认识的字段忽略，某一项写错只忽略这一项。agent 上传应用时严格：清单有任何问题、入口或图片图标不在应用里，整个上传都会被拒绝。
 
 ## 致谢与许可
 
