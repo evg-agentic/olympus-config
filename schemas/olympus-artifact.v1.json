@@ -1,0 +1,75 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://raw.githubusercontent.com/evg-agentic/olympus-config/main/schemas/olympus-artifact.v1.json",
+  "title": ".olympus.json（Artifact 清单）",
+  "description": "Olympus 的 Artifact 清单。放在一个文件夹里，这个文件夹就成为一个 artifact：一个 id，整体上传、整体打开，type 决定它是什么、怎么显示。普通文件夹不放这个文件。",
+  "type": "object",
+  "required": [
+    "version",
+    "type"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "$schema": {
+      "type": "string",
+      "description": "编辑器补全用，Olympus 不读取。"
+    },
+    "version": {
+      "const": 1,
+      "description": "格式版本，目前只能是 1。"
+    },
+    "type": {
+      "enum": [
+        "app"
+      ],
+      "description": "必填，这个文件夹是什么类型的 artifact。目前只有 app：自带页面，从入口打开。以后的类型（如在线表格、文档）各加一个值和一段 metadata.<type>。"
+    },
+    "metadata": {
+      "type": "object",
+      "description": "各类型的属性，每个类型一段，键名就是类型名。Olympus 显示时，某一项写错只忽略这一项；agent 上传时整份校验，有问题就拒绝。",
+      "additionalProperties": false,
+      "properties": {
+        "app": {
+          "type": "object",
+          "description": "type 为 app 时的属性：入口、图标、简介。",
+          "additionalProperties": false,
+          "properties": {
+            "entry": {
+              "type": "string",
+              "description": "入口页面，相对应用文件夹的路径，默认 index.html。可以在子文件夹里，如 dist/index.html。上传时这个文件必须在。",
+              "maxLength": 512,
+              "pattern": "^(\\./)?(?!/)(?!.*(^|/)\\.{1,2}(/|$))(?!.*//)[^\\\\\\u0000-\\u001f]*\\.[hH][tT][mM][lL]?$",
+              "default": "index.html",
+              "examples": [
+                "index.html",
+                "dist/index.html"
+              ]
+            },
+            "icon": {
+              "$ref": "#/$defs/icon",
+              "description": "应用的图标；不写时按类型显示默认图标。"
+            },
+            "description": {
+              "type": "string",
+              "description": "应用简介，显示在卡片和信息面板上。",
+              "maxLength": 500
+            }
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "icon": {
+      "type": "string",
+      "description": "三种写法之一：Lucide 图标名（如 chart-line，见 https://lucide.dev/icons）；一个 emoji；\"./\" 开头的应用内图片路径（png / svg / webp，不超过 256 KB）。写错时用默认图标。",
+      "minLength": 1,
+      "maxLength": 512,
+      "examples": [
+        "chart-line",
+        "📊",
+        "./icon.svg"
+      ]
+    }
+  }
+}
