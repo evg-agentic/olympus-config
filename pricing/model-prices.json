@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-27",
+  "updated_at": "2026-10-28",
   "sources": [
     {
       "name": "curated",
@@ -10,13 +10,13 @@
       "name": "langfuse",
       "repo": "langfuse/langfuse",
       "path": "worker/src/constants/default-model-prices.json",
-      "commit": "f8a29ac37485adb14af38288f02ec94bb387d3bf"
+      "commit": "954891ad1617a2f582b1a94dcb243a6b2abebf7e"
     },
     {
       "name": "litellm",
       "repo": "BerriAI/litellm",
       "path": "model_prices_and_context_window.json",
-      "commit": "c905cd065dfcc64440420e26fa9a085bdc991ba1"
+      "commit": "8033f311f27e9ad5f0776d9eed39a0f484fd9e92"
     }
   ],
   "models": [
@@ -5271,6 +5271,132 @@
       ]
     },
     {
+      "id": "gpt-6.1-terra",
+      "match": "(?i)^(openai/)?(gpt-6.1-terra)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-10-27）",
+      "examples": [
+        "gpt-6.1-terra"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.0,
+            "output": 5.0,
+            "cache_read": 0.05,
+            "cache_write_5m": 1.25
+          }
+        },
+        {
+          "name": "fast/priority · 长上下文 (>272K)",
+          "priority": 50,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 15.0,
+            "cache_read": 0.2,
+            "cache_write_5m": 5.0
+          }
+        },
+        {
+          "name": "flex · 长上下文 (>272K)",
+          "priority": 40,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            },
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 1.0,
+            "output": 3.75,
+            "cache_read": 0.05,
+            "cache_write_5m": 1.25
+          }
+        },
+        {
+          "name": "fast/priority",
+          "priority": 30,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "fast",
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.0,
+            "output": 10.0,
+            "cache_read": 0.1,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "flex",
+          "priority": 20,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "flex"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 0.5,
+            "output": 2.5,
+            "cache_read": 0.025,
+            "cache_write_5m": 0.625
+          }
+        },
+        {
+          "name": "长上下文 (>272K)",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.0,
+            "output": 7.5,
+            "cache_read": 0.1,
+            "cache_write_5m": 2.5
+          }
+        }
+      ]
+    },
+    {
       "id": "gpt-6-luna",
       "match": "(?i)^(openai/)?(gpt-6-luna)$",
       "unit": "mtok",
@@ -5965,130 +6091,6 @@
             "input": 12.5,
             "output": 75.0,
             "cache_read": 1.25
-          }
-        }
-      ]
-    },
-    {
-      "id": "openai-gpt-6.1-terra",
-      "match": "(?i)^(openai/)?(gpt\\-6\\.1\\-terra)$",
-      "unit": "mtok",
-      "currency": "USD",
-      "source": "litellm model_prices_and_context_window.json（openai/）",
-      "examples": [
-        "gpt-6.1-terra"
-      ],
-      "tiers": [
-        {
-          "name": "标准",
-          "rates": {
-            "input": 1.0,
-            "output": 5.0,
-            "cache_read": 0.05,
-            "cache_write_5m": 1.25
-          }
-        },
-        {
-          "name": "flex",
-          "priority": 10,
-          "when": [
-            {
-              "service_tier": {
-                "in": [
-                  "flex"
-                ]
-              }
-            }
-          ],
-          "rates": {
-            "input": 0.5,
-            "output": 2.5,
-            "cache_read": 0.025,
-            "cache_write_5m": 0.625
-          }
-        },
-        {
-          "name": "priority",
-          "priority": 20,
-          "when": [
-            {
-              "service_tier": {
-                "in": [
-                  "priority"
-                ]
-              }
-            }
-          ],
-          "rates": {
-            "input": 2.0,
-            "output": 10.0,
-            "cache_read": 0.1,
-            "cache_write_5m": 2.5
-          }
-        },
-        {
-          "name": "长上下文 >272K",
-          "priority": 30,
-          "when": [
-            {
-              "input_tokens": {
-                "gt": 272000
-              }
-            }
-          ],
-          "rates": {
-            "input": 2.0,
-            "output": 7.5,
-            "cache_read": 0.1,
-            "cache_write_5m": 2.5
-          }
-        },
-        {
-          "name": "长上下文 >272K · flex",
-          "priority": 40,
-          "when": [
-            {
-              "input_tokens": {
-                "gt": 272000
-              }
-            },
-            {
-              "service_tier": {
-                "in": [
-                  "flex"
-                ]
-              }
-            }
-          ],
-          "rates": {
-            "input": 1.0,
-            "output": 3.75,
-            "cache_read": 0.05,
-            "cache_write_5m": 1.25
-          }
-        },
-        {
-          "name": "长上下文 >272K · priority",
-          "priority": 50,
-          "when": [
-            {
-              "input_tokens": {
-                "gt": 272000
-              }
-            },
-            {
-              "service_tier": {
-                "in": [
-                  "priority"
-                ]
-              }
-            }
-          ],
-          "rates": {
-            "input": 4.0,
-            "output": 15.0,
-            "cache_read": 0.2,
-            "cache_write_5m": 5.0
           }
         }
       ]
