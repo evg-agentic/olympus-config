@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-10-28",
+  "updated_at": "2026-10-31",
   "sources": [
     {
       "name": "curated",
@@ -16,7 +16,7 @@
       "name": "litellm",
       "repo": "BerriAI/litellm",
       "path": "model_prices_and_context_window.json",
-      "commit": "8033f311f27e9ad5f0776d9eed39a0f484fd9e92"
+      "commit": "57090e94a4050dc684155a635d8a437020ded774"
     }
   ],
   "models": [
@@ -6096,6 +6096,44 @@
       ]
     },
     {
+      "id": "openai-gpt-6-rosalind",
+      "match": "(?i)^(openai/)?(gpt\\-6\\-rosalind)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（openai/）",
+      "examples": [
+        "gpt-6-rosalind"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 15.0,
+            "output": 75.0,
+            "cache_read": 1.5,
+            "cache_write_5m": 18.75
+          }
+        },
+        {
+          "name": "长上下文 >272K",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 30.0,
+            "output": 112.5,
+            "cache_read": 3.0,
+            "cache_write_5m": 37.5
+          }
+        }
+      ]
+    },
+    {
       "id": "xai-grok-4.3",
       "match": "(?i)^(xai/)?(grok\\-4\\.3|grok\\-4\\.20|grok\\-4\\.20\\-0309|grok\\-4\\.3\\-latest|grok\\-4\\.20\\-reasoning|grok\\-4\\.20\\-multi\\-agent|grok\\-4\\.20\\-non\\-reasoning|grok\\-4\\.20\\-0309\\-reasoning)$",
       "unit": "mtok",
@@ -6255,15 +6293,51 @@
     },
     {
       "id": "xai-grok-build-0.1",
-      "match": "(?i)^(xai/)?(grok\\-build\\-0\\.1|grok\\-code\\-fast|grok\\-code\\-fast\\-1|grok\\-code\\-fast\\-1\\-0825)$",
+      "match": "(?i)^(xai/)?(grok\\-build\\-0\\.1|grok\\-code\\-fast|grok\\-code\\-fast\\-1\\-0825)$",
       "unit": "mtok",
       "currency": "USD",
       "source": "litellm model_prices_and_context_window.json（xai/）",
       "examples": [
         "grok-build-0.1",
         "grok-code-fast",
-        "grok-code-fast-1",
         "grok-code-fast-1-0825"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.0,
+            "output": 2.0,
+            "cache_read": 0.2
+          }
+        },
+        {
+          "name": "长上下文 >200K",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 200000
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.0,
+            "output": 4.0,
+            "cache_read": 0.4
+          }
+        }
+      ]
+    },
+    {
+      "id": "xai-grok-code-fast-1",
+      "match": "(?i)^(xai/)?(grok\\-code\\-fast\\-1)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（xai/）",
+      "note": "厂商已于 2026-05-15 退役，保留最后的官方价，供仍上报该名字的调用计价。",
+      "examples": [
+        "grok-code-fast-1"
       ],
       "tiers": [
         {
@@ -6318,6 +6392,7 @@
       "unit": "mtok",
       "currency": "USD",
       "source": "litellm model_prices_and_context_window.json（moonshot/）",
+      "note": "厂商已于 2026-08-31 退役，保留最后的官方价，供仍上报该名字的调用计价。",
       "examples": [
         "kimi-k2.5"
       ],
@@ -6353,6 +6428,28 @@
       ]
     },
     {
+      "id": "moonshot-kimi-k3.1-pro",
+      "match": "(?i)^(moonshot/)?(kimi\\-k3\\.1\\-pro)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（moonshot/）",
+      "examples": [
+        "kimi-k3.1-pro"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 10.0,
+            "cache_read": 0.2,
+            "cache_write_5m": 2.0,
+            "cache_write_1h": 4.0
+          }
+        }
+      ]
+    },
+    {
       "id": "moonshot-kimi-k3",
       "match": "(?i)^(moonshot/)?(kimi\\-k3)$",
       "unit": "mtok",
@@ -6367,7 +6464,9 @@
           "rates": {
             "input": 3.0,
             "output": 15.0,
-            "cache_read": 0.3
+            "cache_read": 0.3,
+            "cache_write_5m": 3.0,
+            "cache_write_1h": 6.0
           }
         }
       ]
@@ -6514,6 +6613,26 @@
             "output": 0.5,
             "cache_read": 0.03,
             "cache_write_5m": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "zai-glm-5v-turbo",
+      "match": "(?i)^(zai/)?(glm\\-5v\\-turbo)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（zai/）",
+      "examples": [
+        "glm-5v-turbo"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.2,
+            "output": 4.0,
+            "cache_read": 0.24
           }
         }
       ]
@@ -6856,6 +6975,26 @@
       ]
     },
     {
+      "id": "mistral-deepseek-v4-1-flash-1017",
+      "match": "(?i)^(mistral/)?(deepseek\\-v4\\-1\\-flash\\-1017)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（mistral/）",
+      "examples": [
+        "deepseek-v4-1-flash-1017"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.3,
+            "output": 1.2,
+            "cache_read": 0.007
+          }
+        }
+      ]
+    },
+    {
       "id": "mistral-mistral-small-2603",
       "match": "(?i)^(mistral/)?(mistral\\-small\\-2603|mistral\\-small\\-latest|magistral\\-small\\-latest)$",
       "unit": "mtok",
@@ -6891,9 +7030,9 @@
         {
           "name": "标准",
           "rates": {
-            "input": 0.68,
-            "output": 2.09,
-            "cache_read": 0.068
+            "input": 1.36,
+            "output": 4.18,
+            "cache_read": 0.14
           }
         }
       ]
