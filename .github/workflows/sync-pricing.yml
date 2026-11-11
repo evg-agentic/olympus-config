@@ -10,12 +10,13 @@ on:
     # UTC 06:30（北京 14:30）。langfuse 的价目审计在 UTC 02:17 跑，留出合并时间。
     - cron: "30 6 * * *"
   workflow_dispatch:
-  # 手工条目或构建脚本改了，立刻重新生成，不等第二天。
+  # 手工条目、构建脚本或本 workflow 改了，立刻重新生成，不等第二天。
   push:
     branches: [main]
     paths:
       - pricing/curated.json
       - scripts/**
+      - .github/workflows/sync-pricing.yml
 
 permissions:
   contents: write
