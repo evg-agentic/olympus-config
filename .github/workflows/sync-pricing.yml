@@ -1,6 +1,8 @@
 # 每天拉 langfuse / litellm 的最新价目，和 pricing/curated.json 合并后重新生成
-# pricing/model-prices.json。有变化就开（或更新）一个 PR，人工核对后合并；
+# pricing/model-prices.json。有变化就开（或更新）一个 PR 并直接合并进 main；
 # 价格没变化（只是上游有不相干的提交）就什么都不做。
+# olympus 定时从 main 拉这个文件，所以合并即上线计费；PR 留作变更记录，
+# 要撤回某次同步就 revert 对应的合并提交，或在 curated.json 里写覆盖条目。
 name: 同步模型价目
 
 on:
@@ -8,12 +10,13 @@ on:
     # UTC 06:30（北京 14:30）。langfuse 的价目审计在 UTC 02:17 跑，留出合并时间。
     - cron: "30 6 * * *"
   workflow_dispatch:
-  # 手工条目或构建脚本改了，立刻重新生成，不等第二天。
+  # 手工条目、构建脚本或本 workflow 改了，立刻重新生成，不等第二天。
   push:
     branches: [main]
     paths:
       - pricing/curated.json
       - scripts/**
+      - .github/workflows/sync-pricing.yml
 
 permissions:
   contents: write
@@ -50,6 +53,7 @@ jobs:
           fi
 
       - name: 开 PR
+        id: pr
         if: steps.build.outputs.changed == 'true'
         uses: peter-evans/create-pull-request@v8
         with:
@@ -59,3 +63,14 @@ jobs:
           commit-message: "chore: sync model prices from upstream"
           title: "chore: 同步模型价目"
           body-path: ${{ runner.temp }}/pr-body.md
+
+      # 单元测试和构建脚本里的校验都在上面跑过了，这里直接合并。
+      # 用 GITHUB_TOKEN 合并产生的推送不会再触发本 workflow，不会循环。
+      # --match-head-commit 保证合的就是这次生成的提交。
+      - name: 合并 PR
+        if: steps.pr.outputs.pull-request-number != '' && steps.pr.outputs.pull-request-operation != 'closed'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ steps.pr.outputs.pull-request-number }}
+          HEAD_SHA: ${{ steps.pr.outputs.pull-request-head-sha }}
+        run: gh pr merge "$PR" --merge --match-head-commit "$HEAD_SHA"
