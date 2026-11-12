@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-11",
+  "updated_at": "2026-11-12",
   "sources": [
     {
       "name": "curated",
@@ -10,13 +10,13 @@
       "name": "langfuse",
       "repo": "langfuse/langfuse",
       "path": "worker/src/constants/default-model-prices.json",
-      "commit": "933b5cdd496eb217441a045a3d165809459ae2b6"
+      "commit": "8e81e70ad96b072922a99e1f3cad3918ab446a76"
     },
     {
       "name": "litellm",
       "repo": "BerriAI/litellm",
       "path": "model_prices_and_context_window.json",
-      "commit": "8b8ec4e3a64facae7af657ab06bc214dd5bf9060"
+      "commit": "db8ad3b13e7320bf835205cae58be5a58e0ff366"
     }
   ],
   "models": [
@@ -3230,10 +3230,10 @@
     },
     {
       "id": "claude-mythos-5",
-      "match": "(?i)^(anthropic/)?claude-mythos-5$",
+      "match": "(?i)^((anthropic/)?claude-mythos-5|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-mythos-5(-v1(:0)?)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-06-09）",
+      "source": "langfuse default-model-prices.json（2026-11-12）",
       "examples": [
         "claude-mythos-5"
       ],
@@ -3274,10 +3274,10 @@
     },
     {
       "id": "claude-mythos-5-1",
-      "match": "(?i)^(anthropic/)?claude-mythos-5-1$",
+      "match": "(?i)^((anthropic/)?claude-mythos-5-1|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-mythos-5-1(-v1(:0)?)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-09-02）",
+      "source": "langfuse default-model-prices.json（2026-11-12）",
       "examples": [
         "claude-mythos-5-1"
       ],
