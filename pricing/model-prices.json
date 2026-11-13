@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-12",
+  "updated_at": "2026-11-13",
   "sources": [
     {
       "name": "curated",
@@ -10,13 +10,13 @@
       "name": "langfuse",
       "repo": "langfuse/langfuse",
       "path": "worker/src/constants/default-model-prices.json",
-      "commit": "8e81e70ad96b072922a99e1f3cad3918ab446a76"
+      "commit": "a1e4a79af5f44c9cb5590121b02e5ac8099de637"
     },
     {
       "name": "litellm",
       "repo": "BerriAI/litellm",
       "path": "model_prices_and_context_window.json",
-      "commit": "db8ad3b13e7320bf835205cae58be5a58e0ff366"
+      "commit": "6a1f81b9f8bd365718e781c50141fd3164721dbb"
     }
   ],
   "models": [
@@ -6482,6 +6482,25 @@
             "output": 19.8,
             "cache_read": 0.44,
             "cache_write_5m": 5.5
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-decision-1",
+      "match": "(?i)^(google(ai)?/)?(gemini-decision-1)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-11-13）",
+      "examples": [
+        "gemini-decision-1"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 0.1,
+            "output": 0.0
           }
         }
       ]
