@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-13",
+  "updated_at": "2026-11-18",
   "sources": [
     {
       "name": "curated",
@@ -16,7 +16,7 @@
       "name": "litellm",
       "repo": "BerriAI/litellm",
       "path": "model_prices_and_context_window.json",
-      "commit": "6a1f81b9f8bd365718e781c50141fd3164721dbb"
+      "commit": "1b07f26794697f01b22232a21ad41608d0b39ce9"
     }
   ],
   "models": [
@@ -6770,6 +6770,222 @@
             "input": 10.0,
             "output": 50.0,
             "cache_read": 1.0
+          }
+        },
+        {
+          "name": "长上下文 >272K",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 20.0,
+            "output": 75.0,
+            "cache_read": 2.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "openai-gpt-6.2-astra",
+      "match": "(?i)^(openai/)?(gpt\\-6\\.2\\-astra)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（openai/）",
+      "examples": [
+        "gpt-6.2-astra"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 8.0,
+            "output": 40.0,
+            "cache_read": 0.4,
+            "cache_write_5m": 10.0
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 16.0,
+            "output": 80.0,
+            "cache_read": 0.8,
+            "cache_write_5m": 20.0
+          }
+        },
+        {
+          "name": "长上下文 >272K",
+          "priority": 20,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 16.0,
+            "output": 60.0,
+            "cache_read": 0.8,
+            "cache_write_5m": 20.0
+          }
+        },
+        {
+          "name": "长上下文 >272K · priority",
+          "priority": 30,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            },
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 32.0,
+            "output": 120.0,
+            "cache_read": 1.6,
+            "cache_write_5m": 40.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "openai-gpt-6.2-sol",
+      "match": "(?i)^(openai/)?(gpt\\-6\\.2\\-sol)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（openai/）",
+      "examples": [
+        "gpt-6.2-sol"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 10.0,
+            "cache_read": 0.1,
+            "cache_write_5m": 2.5
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 20.0,
+            "cache_read": 0.2,
+            "cache_write_5m": 5.0
+          }
+        },
+        {
+          "name": "长上下文 >272K",
+          "priority": 20,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 4.0,
+            "output": 15.0,
+            "cache_read": 0.2,
+            "cache_write_5m": 5.0
+          }
+        },
+        {
+          "name": "长上下文 >272K · priority",
+          "priority": 30,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            },
+            {
+              "service_tier": {
+                "in": [
+                  "priority"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 8.0,
+            "output": 30.0,
+            "cache_read": 0.4,
+            "cache_write_5m": 10.0
+          }
+        }
+      ]
+    },
+    {
+      "id": "openai-gpt-6.2-astra-law",
+      "match": "(?i)^(openai/)?(gpt\\-6\\.2\\-astra\\-law)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "litellm model_prices_and_context_window.json（openai/）",
+      "examples": [
+        "gpt-6.2-astra-law"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 8.0,
+            "output": 40.0,
+            "cache_read": 0.4,
+            "cache_write_5m": 10.0
+          }
+        },
+        {
+          "name": "长上下文 >272K",
+          "priority": 10,
+          "when": [
+            {
+              "input_tokens": {
+                "gt": 272000
+              }
+            }
+          ],
+          "rates": {
+            "input": 16.0,
+            "output": 60.0,
+            "cache_read": 0.8,
+            "cache_write_5m": 20.0
           }
         }
       ]
