@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-18",
+  "updated_at": "2026-11-19",
   "sources": [
     {
       "name": "curated",
@@ -10,13 +10,13 @@
       "name": "langfuse",
       "repo": "langfuse/langfuse",
       "path": "worker/src/constants/default-model-prices.json",
-      "commit": "70db451ab714f3c26857ab15a3caa65bd61bd0f2"
+      "commit": "a22847511d6f726483cd9a4d432fd169eb43067f"
     },
     {
       "name": "litellm",
       "repo": "BerriAI/litellm",
       "path": "model_prices_and_context_window.json",
-      "commit": "197afe4e4b470ccc49293df885e29aa2956f62f9"
+      "commit": "2f29a55a5102fbf23e406d313ea4b91a7257e48f"
     }
   ],
   "models": [
@@ -6507,6 +6507,123 @@
             "input": 3.6,
             "output": 18.0,
             "cache_read": 0.18
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-4-carbon",
+      "match": "(?i)^(google(ai)?/)?(gemini-4-carbon)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-11-19）",
+      "examples": [
+        "gemini-4-carbon"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 2.0,
+            "output": 10.0,
+            "cache_read": 0.1
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority",
+                  "ON_DEMAND_PRIORITY"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 3.6,
+            "output": 18.0,
+            "cache_read": 0.18
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-4-neon",
+      "match": "(?i)^(google(ai)?/)?(gemini-4-neon)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-11-19）",
+      "examples": [
+        "gemini-4-neon"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 3.0,
+            "output": 15.0,
+            "cache_read": 0.15
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority",
+                  "ON_DEMAND_PRIORITY"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 5.4,
+            "output": 27.0,
+            "cache_read": 0.27
+          }
+        }
+      ]
+    },
+    {
+      "id": "gemini-4-hydrogen",
+      "match": "(?i)^(google(ai)?/)?(gemini-4-hydrogen)$",
+      "unit": "mtok",
+      "currency": "USD",
+      "source": "langfuse default-model-prices.json（2026-11-19）",
+      "examples": [
+        "gemini-4-hydrogen"
+      ],
+      "tiers": [
+        {
+          "name": "标准",
+          "rates": {
+            "input": 1.5,
+            "output": 7.5,
+            "cache_read": 0.075
+          }
+        },
+        {
+          "name": "priority",
+          "priority": 10,
+          "when": [
+            {
+              "service_tier": {
+                "in": [
+                  "priority",
+                  "ON_DEMAND_PRIORITY"
+                ]
+              }
+            }
+          ],
+          "rates": {
+            "input": 2.7,
+            "output": 13.5,
+            "cache_read": 0.135
           }
         }
       ]
