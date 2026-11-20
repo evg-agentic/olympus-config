@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-19",
+  "updated_at": "2026-11-20",
   "sources": [
     {
       "name": "curated",
@@ -16,7 +16,7 @@
       "name": "litellm",
       "repo": "BerriAI/litellm",
       "path": "model_prices_and_context_window.json",
-      "commit": "2f29a55a5102fbf23e406d313ea4b91a7257e48f"
+      "commit": "b9030f9ed8093fd5c5ac28dcf874cd5667e8a3ad"
     }
   ],
   "models": [
@@ -7101,7 +7101,7 @@
             "input": 10.0,
             "output": 50.0,
             "cache_read": 1.0,
-            "cache_write_5m": 18.75
+            "cache_write_5m": 12.5
           }
         },
         {
@@ -7115,10 +7115,10 @@
             }
           ],
           "rates": {
-            "input": 30.0,
-            "output": 112.5,
-            "cache_read": 3.0,
-            "cache_write_5m": 37.5
+            "input": 20.0,
+            "output": 75.0,
+            "cache_read": 2.0,
+            "cache_write_5m": 25.0
           }
         }
       ]
