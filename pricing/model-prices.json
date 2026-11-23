@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-21",
+  "updated_at": "2026-11-23",
   "sources": [
     {
       "name": "curated",
@@ -10,13 +10,13 @@
       "name": "langfuse",
       "repo": "langfuse/langfuse",
       "path": "worker/src/constants/default-model-prices.json",
-      "commit": "a22847511d6f726483cd9a4d432fd169eb43067f"
+      "commit": "dacd72b0f0732e2d1e29523c2d8f0db9797ffd23"
     },
     {
       "name": "litellm",
       "repo": "BerriAI/litellm",
       "path": "model_prices_and_context_window.json",
-      "commit": "ac7674625ceed298d6c411cc964f23aded63989d"
+      "commit": "e6573ba350d4893d0578279c0780e0e2ea25f3ed"
     }
   ],
   "models": [
@@ -1151,7 +1151,7 @@
       "match": "(?i)^(anthropic/)?(claude-3-5-sonnet-20240620|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-3-5-sonnet-20240620-v1:0|claude-3-5-sonnet@20240620)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-3-5-sonnet-20240620"
       ],
@@ -1380,7 +1380,7 @@
       "match": "(?i)^(anthropic/)?(claude-3-5-sonnet-20241022|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-3-5-sonnet-20241022-v2:0|claude-3-5-sonnet-V2@20241022)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-3-5-sonnet-20241022"
       ],
@@ -1402,7 +1402,7 @@
       "match": "(?i)^(anthropic/)?(claude-3-5-sonnet-latest)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-04-13）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-3-5-sonnet-latest"
       ],
@@ -1424,7 +1424,7 @@
       "match": "(?i)^(anthropic/)?(claude-3-5-haiku-20241022|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-3-5-haiku-20241022-v1:0|claude-3-5-haiku-V1@20241022)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-3-5-haiku-20241022"
       ],
@@ -1446,7 +1446,7 @@
       "match": "(?i)^(anthropic/)?(claude-3-5-haiku-latest)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-04-13）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-3-5-haiku-latest"
       ],
@@ -1707,7 +1707,7 @@
       "match": "(?i)^(anthropic/)?(claude-3.7-sonnet-20250219|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-3.7-sonnet-20250219-v1:0|claude-3-7-sonnet-V1@20250219)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-3.7-sonnet-20250219"
       ],
@@ -1729,7 +1729,7 @@
       "match": "(?i)^(anthropic/)?(claude-3-7-sonnet-latest)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-04-13）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-3-7-sonnet-latest"
       ],
@@ -2275,7 +2275,7 @@
       "match": "(?i)^(anthropic/)?(claude-sonnet-4-5(-20250929)?|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-sonnet-4-5(-20250929)?-v1(:0)?|claude-sonnet-4-5-V1(@20250929)?|claude-sonnet-4-5(@20250929)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-08-04）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-sonnet-4-5-20250929"
       ],
@@ -2297,7 +2297,7 @@
       "match": "(?i)^(anthropic/)?(claude-sonnet-4(-20250514)?|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-sonnet-4(-20250514)?-v1(:0)?|claude-sonnet-4-V1(@20250514)?|claude-sonnet-4(@20250514)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-sonnet-4-20250514"
       ],
@@ -2319,7 +2319,7 @@
       "match": "(?i)^(anthropic/)?(claude-sonnet-4-latest)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-04-13）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-sonnet-4-latest"
       ],
@@ -2341,7 +2341,7 @@
       "match": "(?i)^(anthropic/)?(claude-opus-4(-20250514)?|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-4(-20250514)?-v1(:0)?|claude-opus-4(@20250514)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-opus-4-20250514"
       ],
@@ -2517,7 +2517,7 @@
       "match": "(?i)^(anthropic/)?(claude-opus-4-1(-20250805)?|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-4-1(-20250805)?-v1(:0)?|claude-opus-4-1(@20250805)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-opus-4-1-20250805"
       ],
@@ -2939,7 +2939,7 @@
       "match": "(?i)^(anthropic/)?(claude-haiku-4-5(-20251001)?|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-haiku-4-5-20251001-v1:0|claude-4-5-haiku@20251001)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-haiku-4-5-20251001"
       ],
@@ -3081,7 +3081,7 @@
       "match": "(?i)^(anthropic/)?(claude-opus-4-5(-20251101)?|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-4-5(-20251101)?-v1(:0)?|claude-opus-4-5(@20251101)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-opus-4-5-20251101"
       ],
@@ -3103,7 +3103,7 @@
       "match": "(?i)^(anthropic\\/)?(claude-sonnet-4-6|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-sonnet-4-6(-v1(:0)?)?|claude-sonnet-4-6)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-sonnet-4-6"
       ],
@@ -3125,7 +3125,7 @@
       "match": "(?i)^(anthropic/)?(claude-opus-4-6|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-4-6-v1(:0)?|claude-opus-4-6)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-opus-4-6"
       ],
@@ -3147,7 +3147,7 @@
       "match": "(?i)^(anthropic/)?(claude-opus-4-7|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-4-7-v1(:0)?|(eu\\.|us\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-4-7)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-11-05）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-opus-4-7"
       ],
@@ -3169,7 +3169,7 @@
       "match": "(?i)^((anthropic/)?claude-opus-4-8|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-4-8(-v1(:0)?)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-08-20）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-opus-4-8"
       ],
@@ -3211,7 +3211,7 @@
       "match": "(?i)^((anthropic/)?claude-fable-5|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-fable-5(-v1(:0)?)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-fable-5"
       ],
@@ -3233,7 +3233,7 @@
       "match": "(?i)^((anthropic/)?claude-mythos-5|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-mythos-5(-v1(:0)?)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-11-12）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-mythos-5"
       ],
@@ -3255,7 +3255,7 @@
       "match": "(?i)^((anthropic/)?claude-fable-5-1|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-fable-5-1(-v1(:0)?)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-09-02）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-fable-5-1"
       ],
@@ -3277,7 +3277,7 @@
       "match": "(?i)^((anthropic/)?claude-mythos-5-1|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-mythos-5-1(-v1(:0)?)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-11-12）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-mythos-5-1"
       ],
@@ -3299,7 +3299,7 @@
       "match": "(?i)^((anthropic/)?claude-fable-5-2|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-fable-5-2(-v1(:0)?)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-11-10）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-fable-5-2"
       ],
@@ -3341,7 +3341,7 @@
       "match": "(?i)^((anthropic/)?claude-mythos-5-2|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-mythos-5-2(-v1(:0)?)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-11-10）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-mythos-5-2"
       ],
@@ -3383,7 +3383,7 @@
       "match": "(?i)^((anthropic\\/)?claude-sonnet-5|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-sonnet-5(-v1(:0)?)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-07-28）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-sonnet-5"
       ],
@@ -3405,7 +3405,7 @@
       "match": "(?i)^((anthropic\\/)?claude-sonnet-5-5|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-sonnet-5-5(-v1(:0)?)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-10-13）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-sonnet-5-5"
       ],
@@ -3427,7 +3427,7 @@
       "match": "(?i)^((anthropic\\/)?claude-opus-5|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-5(-v1(:0)?)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-08-20）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-opus-5"
       ],
@@ -3469,7 +3469,7 @@
       "match": "(?i)^((anthropic\\/)?claude-opus-5-5|(eu\\.|us\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-opus-5-5(-v1(:0)?)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-09-22）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-opus-5-5"
       ],
@@ -3511,7 +3511,7 @@
       "match": "(?i)^((anthropic\\/)?claude-haiku-5-5|(eu\\.|us\\.|ca\\.|apac\\.|au\\.|jp\\.|global\\.)?anthropic\\.claude-haiku-5-5(-v1(:0)?)?)$",
       "unit": "mtok",
       "currency": "USD",
-      "source": "langfuse default-model-prices.json（2026-11-05）",
+      "source": "langfuse default-model-prices.json（2026-11-20）",
       "examples": [
         "claude-haiku-5-5"
       ],
