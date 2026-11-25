@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-24",
+  "updated_at": "2026-11-25",
   "sources": [
     {
       "name": "curated",
@@ -16,7 +16,7 @@
       "name": "litellm",
       "repo": "BerriAI/litellm",
       "path": "model_prices_and_context_window.json",
-      "commit": "bad883561c70618d0506c109c86aa50d3bac6bb3"
+      "commit": "34d39facdee00d63deff4a87d2ecf5ae8d15f1cf"
     }
   ],
   "models": [
@@ -7632,13 +7632,15 @@
     },
     {
       "id": "xai-grok-4.6",
-      "match": "(?i)^(xai/)?(grok\\-4\\.6|grok\\-4\\.7)$",
+      "match": "(?i)^(xai/)?(grok\\-4\\.6|grok\\-4\\.7|grok\\-4\\.6\\-latest|grok\\-4\\.7\\-latest)$",
       "unit": "mtok",
       "currency": "USD",
       "source": "litellm model_prices_and_context_window.json（xai/）",
       "examples": [
         "grok-4.6",
-        "grok-4.7"
+        "grok-4.7",
+        "grok-4.6-latest",
+        "grok-4.7-latest"
       ],
       "tiers": [
         {
