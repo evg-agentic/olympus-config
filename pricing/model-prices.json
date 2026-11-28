@@ -1,6 +1,6 @@
 {
   "schema_version": 1,
-  "updated_at": "2026-11-25",
+  "updated_at": "2026-11-28",
   "sources": [
     {
       "name": "curated",
@@ -16,7 +16,7 @@
       "name": "litellm",
       "repo": "BerriAI/litellm",
       "path": "model_prices_and_context_window.json",
-      "commit": "34d39facdee00d63deff4a87d2ecf5ae8d15f1cf"
+      "commit": "89813239c4dadc032818ea0567bb13795ad5ee5c"
     }
   ],
   "models": [
@@ -7708,50 +7708,15 @@
     },
     {
       "id": "xai-grok-code-fast",
-      "match": "(?i)^(xai/)?(grok\\-code\\-fast|grok\\-code\\-fast\\-1\\-0825)$",
-      "unit": "mtok",
-      "currency": "USD",
-      "source": "litellm model_prices_and_context_window.json（xai/）",
-      "examples": [
-        "grok-code-fast",
-        "grok-code-fast-1-0825"
-      ],
-      "tiers": [
-        {
-          "name": "标准",
-          "rates": {
-            "input": 1.0,
-            "output": 2.0,
-            "cache_read": 0.2
-          }
-        },
-        {
-          "name": "长上下文 >200K",
-          "priority": 10,
-          "when": [
-            {
-              "input_tokens": {
-                "gt": 200000
-              }
-            }
-          ],
-          "rates": {
-            "input": 2.0,
-            "output": 4.0,
-            "cache_read": 0.4
-          }
-        }
-      ]
-    },
-    {
-      "id": "xai-grok-code-fast-1",
-      "match": "(?i)^(xai/)?(grok\\-code\\-fast\\-1)$",
+      "match": "(?i)^(xai/)?(grok\\-code\\-fast|grok\\-code\\-fast\\-1|grok\\-code\\-fast\\-1\\-0825)$",
       "unit": "mtok",
       "currency": "USD",
       "source": "litellm model_prices_and_context_window.json（xai/）",
       "note": "厂商已于 2026-05-15 退役，保留最后的官方价，供仍上报该名字的调用计价。",
       "examples": [
-        "grok-code-fast-1"
+        "grok-code-fast",
+        "grok-code-fast-1",
+        "grok-code-fast-1-0825"
       ],
       "tiers": [
         {
